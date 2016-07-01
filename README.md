@@ -9,6 +9,7 @@
     
 Resulting library is placed in `dist/clocks.js`
 
+
 ## Simple example
 
     var DateNowClock    = require("clocks").DateNowClock;
