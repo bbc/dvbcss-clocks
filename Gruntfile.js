@@ -82,7 +82,15 @@ module.exports = function(grunt) {
           interrupt: true,
           event: 'all'
         }
-      }
+      },
+      tests: {
+        files: ['src/**/*.js', 'tests/**/*.test.js', 'Gruntfile.js'],
+        tasks: ['test'],
+        options: {
+          interrupt: true,
+          event: 'all'
+        }
+      },
     }
     
   }); 
@@ -98,7 +106,7 @@ module.exports = function(grunt) {
   // default do nothing
   grunt.registerTask('default', ['build', 'watch']);
   
-  grunt.registerTask('test', ['build', 'clean:tests', 'webpack:specs', 'jasmine']);
+  grunt.registerTask('test', ['build', 'clean:tests', 'webpack:specs', 'jasmine', 'watch:tests']);
   grunt.registerTask('build', ['clean:dist', 'clean:build', 'copy:src', 'webpack:lib']);
   
 };
