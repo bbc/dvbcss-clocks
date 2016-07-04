@@ -11,12 +11,19 @@
 var EventEmitter = require("events");
 var inherits = require('inherits');
 
+var WeakMap = require('weakmap');
+var PRIVATE = new WeakMap();
+
 var nextIdNum = 0;
+var nextTimeoutHandle = 0;
 
 
 var ClockBase = function() {
     EventEmitter.call(this);
     
+    PRIVATE.set(this, {});
+    var priv = PRIVATE.get(this);
+
     this._availability = true;
     this.id = "clock_"+nextIdNum;
     nextIdNum = nextIdNum+1;
@@ -219,5 +226,90 @@ ClockBase.getRootMaxFreqError = function() {
         return root.getRootMaxFreqError();
     }
 };
+
+
+/**
+ * Request a timeout callback when the time of this clock passes the current time plus
+ * the number of specified ticks.
+ * @param func  The function to callback
+ * @param ticks  The callback is triggered when the clock passes (reaches or jumps past) this number of ticks beyond the current time.
+ * @param ... Other arguments are passed to the callback
+ */
+ClockBase.prototype.setTimeout = function(func, ticks) {
+	arguments[1] = arguments[1] + this.now()
+	return this.setTimeoutAbs.apply(this, arguments)
+}
+
+/**
+ * Request a timeout callback when the time of this clock passes the specified time.
+ * @param func  The function to callback
+ * @param when  The callback is triggered when the clock passes (reaches or jumps past) this time.
+ * @param ... Other arguments are passed to the callback
+ */
+ClockBase.prototype.setTimeoutAbs = function(func, when) {
+    var priv = PRIVATE.get(this);
+    
+	var self = this
+	var handle = self.id + ":timeout-" + nextTimeoutHandle++
+	var root = self.getRoot();
+
+	if (root == null) {
+		root = self
+	}
+
+    var args = arguments.slice(2); // remove first two args
+
+	var callback = function() {
+		delete priv.timerHandles[handle]
+		func.apply(self, args)
+	}
+
+	var numRootTicks = self.toRootTime(when) - root.now()
+	var millis = numRootTicks * (1000 / root.getTickRate())
+	var realHandle = setTimeout(callback, millis)
+
+	priv.timerHandles[handle] = { realHandle:realHandle, when:when, callback:callback }
+
+	return handle
+}
+
+
+ClockBase.prototype._rescheduleTimers = function() {
+	// clock timing has changed, we need to re-schedule all timers
+    var priv = PRIVATE.get(this);
+
+	var root = this.root
+
+	if (root == null) {
+		root = this
+	}
+
+	for(var handle in this._timerHandles) {
+		if (priv.timerHandles.hasOwnProperty(handle)) {
+			var d = priv.timerHandles[handle]
+
+			// clear existing timer
+			clearTimeout(d.realHandle)
+
+			// re-calculate when this timer is due and re-schedule
+			var numRootTicks = this.toRootTime(d.when) - root.now()
+			var millis = numRootTicks * (1000 / root.getTickRate())
+			d.realHandle = setTimeout(d.callback, millis)
+		}
+	}
+}
+
+ClockBase.prototype.clearTimeout = function(handle) {
+    var priv = PRIVATE.get(this);
+
+	var d = priv.timerHandles[handle]
+	if (d !== undefined) {
+		clearTimeout(d.realHandle)
+		delete priv.timerHandles[handle]
+	}
+}
+
+
+
 
 module.exports = ClockBase;
