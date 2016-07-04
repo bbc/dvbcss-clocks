@@ -299,58 +299,7 @@ describe("CorrelatedClock - setTimeout, clearTimeout", function() {
         expect(callback).toHaveBeenCalledWith("hello");
         
     });
-/*
-    it("Can schedule a timeout callback with arguments then clear it", function() {
-        var dateNowSpy = spyOn(Date, 'now');
-        var callback1 = jasmine.createSpy("tc1");
-        var callback2 = jasmine.createSpy("tc2");
-        
-        var dnc = new DateNowClock();
 
-        dateNowSpy.and.returnValue(500);
-        var handle1 = dnc.setTimeout(callback1, 1000, "hello");
-        var handle2 = dnc.setTimeout(callback2, 1500, "goodbye");
-        
-        dateNowSpy.and.returnValue(500+999);
-        jasmine.clock().tick(999);
-        expect(callback1).not.toHaveBeenCalled();
-        expect(callback2).not.toHaveBeenCalled();
-        dnc.clearTimeout(handle1);
-        
-        dateNowSpy.and.returnValue(500+1499);
-        jasmine.clock().tick(500);
-        expect(callback1).not.toHaveBeenCalled();
-        expect(callback2).not.toHaveBeenCalled();
-
-        dateNowSpy.and.returnValue(500+1500);
-        jasmine.clock().tick(1);
-        expect(callback2).toHaveBeenCalledWith("goodbye");
-    });
-
-    it("Does not fail or affect existing timers if non-existent one is cleared", function() {
-        var dateNowSpy = spyOn(Date, 'now');
-        var callback1 = jasmine.createSpy("tc1");
-        var callback2 = jasmine.createSpy("tc2");
-        
-        var dnc = new DateNowClock();
-
-        dateNowSpy.and.returnValue(500);
-        var handle1 = dnc.setTimeout(callback1, 1000, "hello");
-        var handle2 = dnc.setTimeout(callback2, 1500, "goodbye");
-        
-        dateNowSpy.and.returnValue(500+999);
-        jasmine.clock().tick(999);
-        expect(callback1).not.toHaveBeenCalled();
-        expect(callback2).not.toHaveBeenCalled();
-        
-        dnc.clearTimeout(handle1+"flurble"+handle2);
-        
-        dateNowSpy.and.returnValue(500+1500);
-        jasmine.clock().tick(501);
-        expect(callback1).toHaveBeenCalledWith("hello");
-        expect(callback2).toHaveBeenCalledWith("goodbye");
-    });
-*/
 
 });
 
