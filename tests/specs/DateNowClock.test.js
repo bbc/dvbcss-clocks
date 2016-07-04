@@ -72,6 +72,18 @@ describe("DateNowClock", function() {
         expect(function() { dnc.setAvailability(false); }).toThrow();
     });
     
+    it("has speed 1.0", function() {
+        var dnc = new DateNowClock({tickRate:1000000});
+
+        expect(dnc.getSpeed()).toBe(1);
+    });
+    
+    it("throws an error if you try to set speed", function() {
+        var dnc = new DateNowClock({tickRate:1000000});
+
+        expect(function() { dnc.setSpeed(1.5); }).toThrow();
+    });
+    
     it("returns itself when getRoot() is called", function() {
         var dnc = new DateNowClock({tickRate:1000000});
 
@@ -108,4 +120,86 @@ describe("DateNowClock", function() {
         expect(d1).toBeLessThan(0.005);
     });
     
+});
+
+describe("DateNowClock - setTimeout, clearTimeout", function() {
+    
+    beforeEach(function() {
+        jasmine.clock().install();
+    });
+    
+    afterEach(function() {
+        jasmine.clock().uninstall();
+    });
+    
+    it("Can schedule a timeout callback with arguments", function() {
+        var dateNowSpy = spyOn(Date, 'now');
+        var callback = jasmine.createSpy("tc");
+        
+        var dnc = new DateNowClock();
+
+        dateNowSpy.and.returnValue(500);
+        dnc.setTimeout(callback, 1000, "hello");
+        
+        dateNowSpy.and.returnValue(500+999);
+        jasmine.clock().tick(999);
+        expect(callback).not.toHaveBeenCalled();
+        
+        dateNowSpy.and.returnValue(500+1000);
+        jasmine.clock().tick(1);
+        expect(callback).toHaveBeenCalledWith("hello");
+    });
+
+    it("Can schedule a timeout callback with arguments then clear it", function() {
+        var dateNowSpy = spyOn(Date, 'now');
+        var callback1 = jasmine.createSpy("tc1");
+        var callback2 = jasmine.createSpy("tc2");
+        
+        var dnc = new DateNowClock();
+
+        dateNowSpy.and.returnValue(500);
+        var handle1 = dnc.setTimeout(callback1, 1000, "hello");
+        var handle2 = dnc.setTimeout(callback2, 1500, "goodbye");
+        
+        dateNowSpy.and.returnValue(500+999);
+        jasmine.clock().tick(999);
+        expect(callback1).not.toHaveBeenCalled();
+        expect(callback2).not.toHaveBeenCalled();
+        dnc.clearTimeout(handle1);
+        
+        dateNowSpy.and.returnValue(500+1499);
+        jasmine.clock().tick(500);
+        expect(callback1).not.toHaveBeenCalled();
+        expect(callback2).not.toHaveBeenCalled();
+
+        dateNowSpy.and.returnValue(500+1500);
+        jasmine.clock().tick(1);
+        expect(callback2).toHaveBeenCalledWith("goodbye");
+    });
+
+    it("Does not fail or affect existing timers if non-existent one is cleared", function() {
+        var dateNowSpy = spyOn(Date, 'now');
+        var callback1 = jasmine.createSpy("tc1");
+        var callback2 = jasmine.createSpy("tc2");
+        
+        var dnc = new DateNowClock();
+
+        dateNowSpy.and.returnValue(500);
+        var handle1 = dnc.setTimeout(callback1, 1000, "hello");
+        var handle2 = dnc.setTimeout(callback2, 1500, "goodbye");
+        
+        dateNowSpy.and.returnValue(500+999);
+        jasmine.clock().tick(999);
+        expect(callback1).not.toHaveBeenCalled();
+        expect(callback2).not.toHaveBeenCalled();
+        
+        dnc.clearTimeout(handle1+"flurble"+handle2);
+        
+        dateNowSpy.and.returnValue(500+1500);
+        jasmine.clock().tick(501);
+        expect(callback1).toHaveBeenCalledWith("hello");
+        expect(callback2).toHaveBeenCalledWith("goodbye");
+    });
+
+
 });

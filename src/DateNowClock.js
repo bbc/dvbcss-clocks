@@ -12,8 +12,6 @@ var inherits = require('inherits');
 var ClockBase = require('ClockBase');
 var measurePrecision = require('measurePrecision');
 
-
-
 var WeakMap = require('weakmap');
 var PRIVATE = new WeakMap();
 

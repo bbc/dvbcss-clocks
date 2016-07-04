@@ -27,6 +27,9 @@ var ClockBase = function() {
     this._availability = true;
     this.id = "clock_"+nextIdNum;
     nextIdNum = nextIdNum+1;
+    
+    priv.timerHandles = {};
+    this.on('change', this._rescheduleTimers.bind(this));
 };
 
 inherits(ClockBase, EventEmitter);
@@ -191,7 +194,7 @@ ClockBase.prototype.clockDiff = function(otherClock) {
     
     if (thisSpeed !== otherSpeed) {
         return Number.POSITIVE_INFINITY;
-    } else if (this.getTickrate() !== other.getTickRate()) {
+    } else if (this.getTickRate() !== otherClock.getTickRate()) {
         return Number.POSITIVE_INFINITY;
     } else {
         var root = this.getRoot();
@@ -249,28 +252,32 @@ ClockBase.prototype.setTimeout = function(func, ticks) {
 ClockBase.prototype.setTimeoutAbs = function(func, when) {
     var priv = PRIVATE.get(this);
     
-	var self = this
-	var handle = self.id + ":timeout-" + nextTimeoutHandle++
+	var self = this;
+	var handle = self.id + ":timeout-" + nextTimeoutHandle++;
 	var root = self.getRoot();
 
 	if (root == null) {
-		root = self
+		root = self;
 	}
 
-    var args = arguments.slice(2); // remove first two args
+    // remove first two args
+    var args = new Array(arguments.length-2);
+    for(var i=2; i<arguments.length; i++) {
+        args[i-2] = arguments[i];
+    }
 
 	var callback = function() {
-		delete priv.timerHandles[handle]
-		func.apply(self, args)
+		delete priv.timerHandles[handle];
+		func.apply(self, args);
 	}
-
+;
 	var numRootTicks = self.toRootTime(when) - root.now()
-	var millis = numRootTicks * (1000 / root.getTickRate())
-	var realHandle = setTimeout(callback, millis)
+	var millis = numRootTicks * (1000 / root.getTickRate());
+	var realHandle = setTimeout(callback, millis);
 
-	priv.timerHandles[handle] = { realHandle:realHandle, when:when, callback:callback }
+	priv.timerHandles[handle] = { realHandle:realHandle, when:when, callback:callback };
 
-	return handle
+	return handle;
 }
 
 
@@ -278,23 +285,19 @@ ClockBase.prototype._rescheduleTimers = function() {
 	// clock timing has changed, we need to re-schedule all timers
     var priv = PRIVATE.get(this);
 
-	var root = this.root
+	var root = this.getRoot();
 
-	if (root == null) {
-		root = this
-	}
-
-	for(var handle in this._timerHandles) {
+	for(var handle in priv.timerHandles) {
 		if (priv.timerHandles.hasOwnProperty(handle)) {
-			var d = priv.timerHandles[handle]
+			var d = priv.timerHandles[handle];
 
 			// clear existing timer
-			clearTimeout(d.realHandle)
+			clearTimeout(d.realHandle);
 
 			// re-calculate when this timer is due and re-schedule
-			var numRootTicks = this.toRootTime(d.when) - root.now()
-			var millis = numRootTicks * (1000 / root.getTickRate())
-			d.realHandle = setTimeout(d.callback, millis)
+			var numRootTicks = this.toRootTime(d.when) - root.now();
+			var millis = numRootTicks * (1000 / root.getTickRate());
+			d.realHandle = setTimeout(d.callback, Math.max(0,millis));
 		}
 	}
 }

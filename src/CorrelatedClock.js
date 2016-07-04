@@ -47,26 +47,25 @@ var CorrelatedClock = function(parent, options) {
     }
     
     priv.parentHandlers = {
-        "change" : (causeClock) => {
+        "change" : function(causeClock) {
             this.emit("change", this);
-        },
-        "available" : (causeClock) => {
+        }.bind(this),
+        "available" : function(causeClock) {
             // propagate only if it has an effect. If this clock is unavailable anyway, then there is no effect.
             if (this.getAvailabilityFlag()) {
                 this.emit("available", this);
             }
-        },
-        "unavailable" : (causeClock) => {
+        }.bind(this),
+        "unavailable" : function(causeClock) {
             // propagate only if it has an effect. If this clock is unavailable anyway, then there is no effect.
             if (this.getAvailabilityFlag()) {
                 this.emit("unavailable", this);
             }
-        }
-    }
+        }.bind(this)
+    };
 
     priv.parent = null;
-    this.setParent(parent);
-    
+    this.setParent(parent);    
 };
 
 inherits(CorrelatedClock, ClockBase);
@@ -81,12 +80,12 @@ CorrelatedClock.prototype.now = function() {
 CorrelatedClock.prototype.toString = function() {
     var priv = PRIVATE.get(this);
     if (priv.parent) {
-        var p = p.id;
+        var p = priv.parent.id;
     } else {
         var p = "<<no-parent>>";
     }
     return "CorrelatedClock("+p+", {tickRate:"+priv.freq+", speed:"+priv.speed+", correlation:"+priv.corr+"}) ["+this.id+"]"
-}
+};
 
 CorrelatedClock.prototype.getSpeed = function() {
     return PRIVATE.get(this).speed;
@@ -95,7 +94,7 @@ CorrelatedClock.prototype.getSpeed = function() {
 CorrelatedClock.prototype.setSpeed = function(newSpeed) {
     var priv = PRIVATE.get(this);
     if (priv.speed != newSpeed) {
-        priv.speed = newspeed;
+        priv.speed = newSpeed;
         this.emit("change", this);
     }
 };
@@ -138,7 +137,7 @@ CorrelatedClock.prototype.setCorrelationAndSpeed = function(newCorrelation, newS
     priv.corr = newCorrelation;
     priv.speed = newSpeed;
     this.emit("change",this);
-}
+};
 
 CorrelatedClock.prototype.calcWhen = function(t) {
     var priv = PRIVATE.get(this);
@@ -224,5 +223,3 @@ CorrelatedClock.prototype._errorAtTime = function(t) {
 };
 
 module.exports = CorrelatedClock;
-
-
