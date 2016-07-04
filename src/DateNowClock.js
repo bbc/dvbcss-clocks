@@ -14,6 +14,7 @@ var measurePrecision = require('measurePrecision');
 
 
 
+var WeakMap = require('weakmap');
 var PRIVATE = new WeakMap();
 
 var DATENOW_PRECISION = measurePrecision(Date.now.bind(Date), 100) / 1000;

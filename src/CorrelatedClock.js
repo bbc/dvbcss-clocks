@@ -12,7 +12,7 @@ var inherits = require('inherits');
 var ClockBase = require('ClockBase');
 var Correlation = require('Correlation');
 
-
+var WeakMap = require('weakmap');
 var PRIVATE = new WeakMap();
 
 
