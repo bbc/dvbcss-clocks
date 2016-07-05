@@ -1,6 +1,7 @@
 # Pure JS clocks library
 
-**Work in progress. Code not yet tested at all**.
+An implementation of software "clock" objects in JS. Very similar to that
+done for [pydvbcss](https://github.com/bbc/pydvbcss).
 
 ## Getting started
 
