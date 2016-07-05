@@ -24,7 +24,25 @@ var PRIVATE = new WeakMap();
  * @classdesc
  * Clock based on a parent clock using a {@link Correlation}.
  *
- * <p>Blah blah
+ * <p>The correlation determines how the time of this clock is calculated from
+ * the time of the parent clock.
+ * The correlation represents a point where a given time of the parent equates
+ * to a given time of this clock (the child clock).
+ *
+ * <p>In effect, the combination of all these factors can be though of as defining
+ * a striaght line equation with the parent clock's time on the X-axis and this
+ * clock's time on the Y-axis. The line passes through the point of correlation
+ * and the slope is dictated by the tick rates of both clocks and the speed of
+ * this clock.
+ *
+ * Speed and tick rate are then taken into account to extrapolate from that
+ * point.
+ *
+ * 
+ *
+ * @listens change
+ * @listens available
+ * @listens unavailable
  *
  * @constructor
  * @override

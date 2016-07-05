@@ -19,6 +19,7 @@ var nextTimeoutHandle = 0;
 
 
 /**
+ * @module clocks
  * @exports ClockBase
  * @class ClockBase
  *
@@ -30,22 +31,27 @@ var nextTimeoutHandle = 0;
  * such as availability, speed, tick rate and parents, and provides the basic
  * events framework, some standard helper methods for time conversion between clocks, comparisons
  * between clocks and calculating disperison (error/uncertainty).
- * 
+ *
+ * <p>Clocks may fire the following events:
+ * <ul>
+ *   <li> [change]{@link event:change} 
+ *   <li> [available]{@link event:available} 
+ *   <li> [unavailable]{@link event:unavailable} 
+ * </ul>
+ *
  * <p>Clock implementations should inherit from this class and implement some
  * or all of the following method stubs:
- * <ul>
- *   <li> [now()]{@link ClockBase#now}
- *   <li> [calcWhen()]{@link ClockBase#calcWhen}
- *   <li> [getTickRate()]{@link ClockBase#getTickRate}
- *   <li> [setTickRate()]{@link ClockBase#setTickRate}
- *   <li> [getSpeed()]{@link ClockBase#getSpeed}
- *   <li> [setSpeed()]{@link ClockBase#setSpeed}
- *   <li> [getParent()]{@link ClockBase#getParent}
- *   <li> [setParent()]{@link ClockBase#setParent}
- *   <li> [toParentTime()]{@link ClockBase#toParentTime}
- *   <li> [fromParentTime()]{@link ClockBase#fromParentTime}
- *   <li> [_errorAtTime()]{@link ClockBase#_errorAtTime}
- * </ul>
+ *   [now()]{@link ClockBase#now}
+ *   [calcWhen()]{@link ClockBase#calcWhen}
+ *   [getTickRate()]{@link ClockBase#getTickRate}
+ *   [setTickRate()]{@link ClockBase#setTickRate}
+ *   [getSpeed()]{@link ClockBase#getSpeed}
+ *   [setSpeed()]{@link ClockBase#setSpeed}
+ *   [getParent()]{@link ClockBase#getParent}
+ *   [setParent()]{@link ClockBase#setParent}
+ *   [toParentTime()]{@link ClockBase#toParentTime}
+ *   [fromParentTime()]{@link ClockBase#fromParentTime}
+ *   [_errorAtTime()]{@link ClockBase#_errorAtTime}
  *
  * @constructor
  * @abstract
@@ -78,12 +84,15 @@ ClockBase.prototype.now = function() {
  * @var {Number} speed The speed at which this clock is running.
  * 1.0 = normal. 0.0 = pause. negative values mean it ticks in reverse.
  *
+ * For some implementations this can be changed, as well as read.
+ *
  * <p>The underlying implementation of this property uses the
  * [getSpeed]{@link ClockBase#getSpeed} and
  * [setSpeed]{@link ClockBase#setSpeed} methods.
  * @default 1.0
  * @memberof ClockBase
  * @instance
+ * @fires change
  */
 Object.defineProperty(ClockBase.prototype, "speed", {
     get: function() { return this.getSpeed(); },
@@ -93,12 +102,15 @@ Object.defineProperty(ClockBase.prototype, "speed", {
 /**
  * @var {Number} tickRate The rate of this clock (in ticks per second).
  *
+ * For some implementations this can be changed, as well as read.
+ *
  * <p>The underlying implementation of this property uses the
  * [getTickRate]{@link ClockBase#getTickRate} and
  * [setTickRate]{@link ClockBase#setTickRate} methods.
  *
  * @memberof ClockBase
  * @instance
+ * @fires change
  */
 Object.defineProperty(ClockBase.prototype, "tickRate", {
     get: function() { return this.getTickRate(); },
@@ -108,12 +120,15 @@ Object.defineProperty(ClockBase.prototype, "tickRate", {
 /**
  * @var {ClockBase} parent The parent of this clock, or <tt>null</tt> if it has no parent.
  *
+ * For some implementations this can be changed, as well as read.
+ *
  * <p>The underlying implementation of this property uses the
  * [getParent]{@link ClockBase#getParent} and
  * [setParent]{@link ClockBase#setParent} methods.
  *
  * @memberof ClockBase
  * @instance
+ * @fires change
  */
 Object.defineProperty(ClockBase.prototype, "parent", {
     get: function() { return this.getParent(); },
@@ -122,6 +137,8 @@ Object.defineProperty(ClockBase.prototype, "parent", {
 
 /**
  * @var {Boolean} availabilityFlag The availability flag for this clock.
+ *
+ * For some implementations this can be changed, as well as read.
  *
  * <p>This is only the flag for this clock. Its availability may also be affected
  * by the flags on its parents. To determine true availability, call the
@@ -134,6 +151,9 @@ Object.defineProperty(ClockBase.prototype, "parent", {
 * @default true
  * @memberof ClockBase
  * @instance
+ * @fires change
+ * @fires available
+ * @fires unavailable
  */
 Object.defineProperty(ClockBase.prototype, "availabilityFlag", {
     get: function() { return this.getAvailabilityFlag(); },
@@ -153,6 +173,7 @@ ClockBase.prototype.getSpeed = function() {
  * Sets the current speed of this clock, or throws an exception if this is not possible
  * @param {Number} newSpeed The new speed for this clock.
  * @abstract
+ * @fires change
  */
 ClockBase.prototype.setSpeed = function(newSpeed) {
     throw "Unimplemented";
@@ -186,6 +207,7 @@ ClockBase.prototype.getTickRate = function() {
  * Sets the current tick rate of this clock, or throws an exception if this is not possible.
  * @param {Number} newRate New tick rate in ticks/second.
  * @abstract
+ * @fires change
  */
 ClockBase.prototype.setTickRate = function(newRate) {
     throw "Unimplemented";
@@ -225,6 +247,9 @@ ClockBase.prototype.isAvailable = function() {
  * [isAvailable]{@link ClockBase#isAvailable} method.
  *
  * @param {Boolean} availability The availability flag for this clock
+ * @fires change
+ * @fires unavailable
+ * @fires available
  */
 ClockBase.prototype.setAvailabilityFlag = function(availability) {
     var isChange = (this._availability && !availability) || (!(this._availability) && availability);
@@ -237,10 +262,38 @@ ClockBase.prototype.setAvailabilityFlag = function(availability) {
     
     if (isChange) {
         if (availability) {
+            /**
+             * This clock has become available.
+             * 
+             * This might be because [availabilityFlag]{@link ClockBase#availabilityFlag}
+             * became true for this clock, or one of its parents in the hierarchy, causing this
+             * clock and all its parents to now be flagged as available.
+             * @event available
+             */
             this.emit("available", this);
         } else {
+            /**
+             * This clock has become unavailable.
+             * 
+             * This might be because [availabilityFlag]{@link ClockBase#availabilityFlag}
+             * became false for this clock, or one of its parents in the hierarchy.
+             * @event unavailable
+             */
             this.emit("unavailable", this);
         }
+        /**
+         * There has been a change in the timing or availability of this clock.
+         * This might be due to a change made directly to this clock, or a change
+         * made to a parent in the hierarchy that affected this clock.
+         *
+         * <p>Causes of changes to clocks include: changes to
+         * [availability]{@link ClockBase#availabilityFlag},
+         * [speed]{@link ClockBase#speed},
+         * [tick rate]{@link ClockBase#tickRate},
+         * [correlation]{@link CorrelatedClock#correlation}, or
+         * [parentage]{@link ClockBase#parent}.
+         * @event change
+         */
         this.emit("change", this);
     }
 };
@@ -406,6 +459,7 @@ ClockBase.prototype.getParent = function() {
  * @param {ClockBase} parent clock, or <tt>null</tt>
  * @throws if it is not allowed to set this clock's parent.
  * @abstract
+ * @fires change
  */
 ClockBase.prototype.setParent = function(newParent) {
     throw "Unimplemented";
@@ -500,12 +554,16 @@ ClockBase.prototype.getRootMaxFreqError = function() {
  *
  * @callback setTimeoutCallback
  * @param {...*} args The parameters that were passed when the callback was scheduled.
- * @this The {@link ClockBase} object that the timer was scheduled with.
+ * @this ClockBase
  */
 
 /**
  * Request a timeout callback when the time of this clock passes the current time plus
  * the number of specified ticks.
+ *
+ * <p>If there are changes to timing caused by changes to this clock or its parents, then this timer will be automatically
+ * rescheduled to compensate.
+ *
  * @param {setTimeoutCallback} func  The function to callback
  * @param {Number} ticks  The callback is triggered when the clock passes (reaches or jumps past) this number of ticks beyond the current time.
  * @param {...*} args Other arguments are passed to the callback
@@ -518,6 +576,10 @@ ClockBase.prototype.setTimeout = function(func, ticks) {
 
 /**
  * Request a timeout callback when the time of this clock passes the specified time.
+ *
+ * <p>If there are changes to timing caused by changes to this clock or its parents, then this timer will be automatically
+ * rescheduled to compensate.
+ *
  * @param {setTimeoutCallBack} func  The function to callback
  * @param {Number} when  The callback is triggered when the clock passes (reaches or jumps past) this time.
  * @param {...*} args Other arguments are passed to the callback
