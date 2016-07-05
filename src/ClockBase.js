@@ -550,7 +550,7 @@ ClockBase.prototype.getRootMaxFreqError = function() {
 
 
 /**
- * A callback that is called when using [setTimeout]{@link ClockBase#setTimeout} or [setTimeoutAbs][@link ClockBase#setTimeoutAbs].
+ * A callback that is called when using [setTimeout]{@link ClockBase#setTimeout} or [setAtTime][@link ClockBase#setAtTime].
  *
  * @callback setTimeoutCallback
  * @param {...*} args The parameters that were passed when the callback was scheduled.
@@ -571,7 +571,7 @@ ClockBase.prototype.getRootMaxFreqError = function() {
  */
 ClockBase.prototype.setTimeout = function(func, ticks) {
 	arguments[1] = arguments[1] + this.now()
-	return this.setTimeoutAbs.apply(this, arguments)
+	return this.setAtTime.apply(this, arguments)
 }
 
 /**
@@ -585,7 +585,7 @@ ClockBase.prototype.setTimeout = function(func, ticks) {
  * @param {...*} args Other arguments are passed to the callback
  * @returns A handle for the timer. Pass this handle to [clearTimeout]{@link ClockBase#clearTimeout} to cancel this timer callback.
  */
-ClockBase.prototype.setTimeoutAbs = function(func, when) {
+ClockBase.prototype.setAtTime = function(func, when) {
     var priv = PRIVATE.get(this);
     
 	var self = this;
@@ -639,7 +639,7 @@ ClockBase.prototype._rescheduleTimers = function() {
 }
 
 /**
- * Clear (cancel) a timer that was scheduled using [setTimeout]{@link ClockBase#setTimeout} or [setTimeoutAbs][@link ClockBase#setTimeoutAbs].
+ * Clear (cancel) a timer that was scheduled using [setTimeout]{@link ClockBase#setTimeout} or [setAtTime][@link ClockBase#setAtTime].
  *
  * @param handle - The handle for the previously scheduled callback.
  *
