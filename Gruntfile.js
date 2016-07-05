@@ -91,8 +91,17 @@ module.exports = function(grunt) {
           event: 'all'
         }
       },
-    }
+    },
     
+    jsdoc : {
+        dist : {
+            src: ['src/*.js', 'test/*.js'],
+            options: {
+                destination: 'doc'
+            }
+        }
+    }
+
   }); 
 
 
@@ -101,7 +110,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  
+  grunt.loadNpmTasks('grunt-jsdoc');
 
   // default do nothing
   grunt.registerTask('default', ['build', 'watch']);
