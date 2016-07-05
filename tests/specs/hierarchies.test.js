@@ -116,8 +116,8 @@ describe("For hierarchies of clocks", function() {
         var b3t1 = b3.now();
         var b4t1 = b4.now();
         
-        a3.setSpeed(0.5);
-        a4.setSpeed(0.2);
+        a3.speed = 0.5;
+        a4.speed = 0.2;
         
         expect(a.getEffectiveSpeed()).toEqual(1.0);
         expect(a1.getEffectiveSpeed()).toEqual(1.0);
@@ -125,8 +125,8 @@ describe("For hierarchies of clocks", function() {
         expect(a3.getEffectiveSpeed()).toEqual(0.5);
         expect(a4.getEffectiveSpeed()).toEqual(0.1);
         
-        a3.setSpeed(0);
-        a4.setSpeed(1.0);
+        a3.speed = 0;
+        a4.speed = 1.0;
         
         expect(a.getEffectiveSpeed()).toEqual(1.0);
         expect(a1.getEffectiveSpeed()).toEqual(1.0);
@@ -195,7 +195,7 @@ describe("For hierarchies of clocks", function() {
         expect(c.isAvailable()).toBeTruthy();
         expect(d.isAvailable()).toBeTruthy();
 
-        c.setAvailability(false);
+        c.availabilityFlag = false;
         expect(a.isAvailable()).toBeTruthy();
         expect(b.isAvailable()).toBeTruthy();
         expect(c.isAvailable()).toBeFalsy();
@@ -208,12 +208,12 @@ describe("For hierarchies of clocks", function() {
              callback.calls.reset();
          });
          
-         d.setAvailability(false);
+         d.availabilityFlag = false;
         [aa,ua,ca,ab,ub,cb,ac,uc,cc,ad,ud,cd].forEach(function(callback) {
              expect(callback).not.toHaveBeenCalled();
          });
          
-         c.setAvailability(true);
+         c.availabilityFlag = true;
         [aa,ua,ca,ab,ub,cb,uc,ad,ud].forEach(function(callback) {
              expect(callback).not.toHaveBeenCalled();
          });
@@ -245,10 +245,10 @@ describe("For hierarchies of clocks", function() {
         expect(b.clockDiff(d)).toEqual(Number.POSITIVE_INFINITY);
         expect(b.clockDiff(e)).toBeCloseTo(0.001666667, 6);
 
-        c.setTickRate(1000);
+        c.tickRate = 1000;
         expect(b.clockDiff(c)).toEqual(0);
         
-        c.setSpeed(1.01);
+        c.speed = 1.01;
         expect(b.clockDiff(c)).toEqual(Number.POSITIVE_INFINITY);
     });
 });

@@ -20,15 +20,15 @@ describe("CorrelatedClock", function() {
     it("takes a parent clock as an argument", function() {
         var root = new DateNowClock();
         var cc = new CorrelatedClock(root);
-        expect(cc.getParent()).toBe(root);
+        expect(cc.parent).toBe(root);
     });
     
     it("defaults to a speed of 1.0, tick rate of 1kHz and Correlation(0,0,0,0)", function() {
         var root = new DateNowClock();
         var cc = new CorrelatedClock(root);
-        expect(cc.getTickRate()).toBe(1000);
-        expect(cc.getSpeed()).toBe(1);
-        expect(cc.getCorrelation()).toEqual(new Correlation(0,0,0,0));
+        expect(cc.tickRate).toBe(1000);
+        expect(cc.speed).toBe(1);
+        expect(cc.correlation).toEqual(new Correlation(0,0,0,0));
     });
     
     it("can be configured with alternative speed, tick rate and correlation at creation", function() {
@@ -38,9 +38,9 @@ describe("CorrelatedClock", function() {
             tickRate: 5000,
             correlation: new Correlation(1,2,3,4)
         });
-        expect(cc.getTickRate()).toBe(5000);
-        expect(cc.getSpeed()).toBe(2);
-        expect(cc.getCorrelation()).toEqual(new Correlation(1,2,3,4));
+        expect(cc.tickRate).toBe(5000);
+        expect(cc.speed).toBe(2);
+        expect(cc.correlation).toEqual(new Correlation(1,2,3,4));
     });
     
     
@@ -70,10 +70,12 @@ describe("CorrelatedClock", function() {
             tickRate: 1000,
             correlation: new Correlation(0,300)
         });
+		console.log(c.correlation.parentTime, c.correlation.childTime, c.correlation.initialError, c.correlation.errorGrowthRate);
         expect(c.now()).toBe(5020.8*1000 + 300);
         
-        c.setCorrelation(new Correlation(50000, 320));
-        expect(c.getCorrelation()).toEqual(new Correlation(50000, 320));
+        c.correlation = new Correlation(50000, 320);
+		console.log(c.correlation.parentTime, c.correlation.childTime, c.correlation.initialError, c.correlation.errorGrowthRate);
+        expect(c.correlation).toEqual(new Correlation(50000, 320));
         expect(c.now()).toBe(((5020.8*1000000) - 50000) / 1000 + 320);
     });
     
@@ -86,15 +88,15 @@ describe("CorrelatedClock", function() {
         
         expect(callback).not.toHaveBeenCalled();
         
-        c.setCorrelation(new Correlation(1,2));
+        c.correlation = new Correlation(1,2);
         expect(callback).toHaveBeenCalledWith(c);
         callback.calls.reset();
 
-        c.setSpeed(5.0);
+        c.speed = 5.0;
         expect(callback).toHaveBeenCalledWith(c);
         callback.calls.reset();
 
-        c.setTickRate(999);
+        c.tickRate = 999;
         expect(callback).toHaveBeenCalledWith(c);
         callback.calls.reset();
 
@@ -145,7 +147,7 @@ describe("CorrelatedClock", function() {
         });
         
         c.rebaseCorrelationAt(400);
-        expect(c.getCorrelation()).toEqual(new Correlation(150,400));
+        expect(c.correlation).toEqual(new Correlation(150,400));
     });
     
     it("can convert a time to that of its parent", function() {
@@ -181,7 +183,7 @@ describe("CorrelatedClock", function() {
     it("can return its parent", function() {
         var root = new DateNowClock();
         var c = new CorrelatedClock(root);
-        expect(c.getParent()).toBe(root);
+        expect(c.parent).toBe(root);
     });
     
     it("can return the root clock", function() {
@@ -220,9 +222,30 @@ describe("CorrelatedClock", function() {
 
         expect(b.quantifyChange(new Correlation(0,0), 1.01)).toEqual(Number.POSITIVE_INFINITY);
         
-        b.setSpeed(0.0);
+        b.speed = 0.0;
         expect(b.quantifyChange(new Correlation(0, 5), 0.0)).toEqual(0.005);
     });
+	
+	it("Can set correlation during construction using an array of values or an object with keys", function() {
+		var root = new DateNowClock();
+
+		var c = new CorrelatedClock(root, {correlation:[1,2,3,4]});
+		expect(c.correlation).toEqual(new Correlation(1,2,3,4));
+		
+		c = new CorrelatedClock(root, {correlation:{parentTime:5, childTime:6, initialError:7, errorGrowthRate:8}});
+		expect(c.correlation).toEqual(new Correlation(5,6,7,8));
+	});
+
+	it("Can set correlation using an array of values or an object with keys", function() {
+		var root = new DateNowClock();
+		var c = new CorrelatedClock(root);
+		
+		c.correlation = [1,2,3,4];
+		expect(c.correlation).toEqual(new Correlation(1,2,3,4));
+		
+		c.correlation = {parentTime:5, childTime:6, initialError:7, errorGrowthRate:8};
+		expect(c.correlation).toEqual(new Correlation(5,6,7,8));
+	});
 });
 
 

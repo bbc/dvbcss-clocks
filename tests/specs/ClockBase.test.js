@@ -18,7 +18,46 @@ describe("ClockBase", function() {
     
     /**
         most other code cannot be tested here because it relies on
-        methods that wil be implemented in subclasses
+        methods that wil be implemented in subclasses. But we can check the
+		properties:
     **/
+	
+	it("calls through to get/set methods when tickRate, speed, availabilityFlag, parent properties are gotten or set", function() {
+		var c = new ClockBase();
+		var spy;
+		
+		spy = spyOn(c, "getTickRate");
+		var _ = c.tickRate;
+		expect(spy).toHaveBeenCalled();
+		
+		spy = spyOn(c, "getSpeed");
+		var _ = c.speed;
+		expect(spy).toHaveBeenCalled();
+		
+		spy = spyOn(c, "getAvailabilityFlag");
+		var _ = c.availabilityFlag;
+		expect(spy).toHaveBeenCalled();
+		
+		spy = spyOn(c, "getParent");
+		var _ = c.parent;
+		expect(spy).toHaveBeenCalled();
+		
+		spy = spyOn(c,"setTickRate");
+		c.tickRate = 5;
+		expect(spy).toHaveBeenCalledWith(5);
+
+		spy = spyOn(c,"setSpeed");
+		c.speed = 2;
+		expect(spy).toHaveBeenCalledWith(2);
+
+		spy = spyOn(c,"setAvailabilityFlag");
+		c.availabilityFlag = false;
+		expect(spy).toHaveBeenCalledWith(false);
+
+		spy = spyOn(c,"setParent");
+		c.parent = "hello";
+		expect(spy).toHaveBeenCalledWith("hello");
+
+	});
 });
 

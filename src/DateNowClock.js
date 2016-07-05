@@ -72,7 +72,7 @@ DateNowClock.prototype.getParent = function() {
     return null;
 };
 
-DateNowClock.prototype.setAvailability = function(availability) {
+DateNowClock.prototype.setAvailabilityFlag = function(availability) {
     throw "Cannot change availability of this clock.";
 };
 

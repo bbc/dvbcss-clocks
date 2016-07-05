@@ -13,48 +13,50 @@ var PRIVATE = new WeakMap();
 
 
 
-var Correlation = function(parentTime, childTime, initialError, errorGrowthRate) {
+var Correlation = function(parentTimeOrObject, childTime, initialError, errorGrowthRate) {
     PRIVATE.set(this, {});
     
     var priv = PRIVATE.get(this);
     
-    priv.parentTime = (parentTime) ? parentTime : 0;
-    priv.childTime  = (childTime)  ? childTime  : 0;
+    if (Array.isArray(parentTimeOrObject)) {
+        var parentTime = parentTimeOrObject[0];
+        var childTime = parentTimeOrObject[1];
+        var initialError = parentTimeOrObject[2];
+        var errorGrowthRate = parentTimeOrObject[3];
+    } else if (typeof parentTimeOrObject === "object") {
+        var parentTime = parentTimeOrObject.parentTime;
+        var childTime = parentTimeOrObject.childTime;
+        var initialError = parentTimeOrObject.initialError;
+        var errorGrowthRate = parentTimeOrObject.errorGrowthRate;
+    } else {
+        var parentTime = parentTimeOrObject;
+    }
+    
+    priv.parentTime = (typeof parentTime !== "undefined") ? parentTime : 0;
+    priv.childTime  = (typeof childTime !== "undefined")  ? childTime  : 0;
 
-    priv.initialError    = (initialError)    ? initialError    : 0;
-    priv.errorGrowthRate = (errorGrowthRate) ? errorGrowthRate : 0;
+    priv.initialError    = (typeof initialError !== "undefined")    ? initialError    : 0;
+    priv.errorGrowthRate = (typeof errorGrowthRate !== "undefined") ? errorGrowthRate : 0;
 };
 
 Correlation.prototype.butWith = function(changes) {
     var priv = PRIVATE.get(this);
-    var name;
 
-    var p = priv.parentTime;
-    var c = priv.childTime;
-    var i = priv.initialError;
-    var g = priv.errorGrowthRate;
-    
-    for(name in changes) {
-        if (changes.hasOwnProperty(name)) {
-            switch (name) {
-                case "parentTime":
-                    p = changes[name];
-                    break;
-                case "childTime":
-                    c = changes[name];
-                    break;
-                case "initialError":
-                    i = changes[name];
-                    break;
-                case "errorGrowthRate":
-                    g = changes[name];
-                    break;
-                default:
-                    throw "Unrecognised change '"+name+"'";
-            }
-        }
+    if (typeof changes === "undefined") {
+        return this;
+    } else {
+        var p = changes.parentTime;
+        var c = changes.childTime;
+        var i = changes.initialError;
+        var g = changes.errorGrowthRate;
+        
+        if (typeof p === "undefined") { p = priv.parentTime; }
+        if (typeof c === "undefined") { c = priv.childTime; }
+        if (typeof i === "undefined") { i = priv.initialError; }
+        if (typeof g === "undefined") { g = priv.errorGrowthRate; }
+
+        return new Correlation(p,c,i,g);
     }
-    return new Correlation(p,c,i,g);
 };
 
 Object.defineProperty(Correlation.prototype, "parentTime", {

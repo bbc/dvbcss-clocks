@@ -31,6 +31,71 @@ describe("Correlation", function() {
 		expect(c.errorGrowthRate).toBe(1.2);
 	});
 	
+	it("can take a single argument being an object with properties parentTime, childTime, initialError and errorGrowthRate, or a subset thereof", function() {
+		var c = new Correlation({});
+		expect(c.parentTime).toBe(0);
+		expect(c.childTime).toBe(0);
+		expect(c.initialError).toBe(0);
+		expect(c.errorGrowthRate).toBe(0);
+
+		var c = new Correlation({parentTime:5});
+		expect(c.parentTime).toBe(5);
+		expect(c.childTime).toBe(0);
+		expect(c.initialError).toBe(0);
+		expect(c.errorGrowthRate).toBe(0);
+
+		var c = new Correlation({parentTime:5, childTime:10});
+		expect(c.parentTime).toBe(5);
+		expect(c.childTime).toBe(10);
+		expect(c.initialError).toBe(0);
+		expect(c.errorGrowthRate).toBe(0);
+
+		var c = new Correlation({parentTime:5, childTime:10, initialError:7});
+		expect(c.parentTime).toBe(5);
+		expect(c.childTime).toBe(10);
+		expect(c.initialError).toBe(7);
+		expect(c.errorGrowthRate).toBe(0);
+
+		var c = new Correlation({parentTime:5, childTime:10, initialError:7, errorGrowthRate:99});
+		expect(c.parentTime).toBe(5);
+		expect(c.childTime).toBe(10);
+		expect(c.initialError).toBe(7);
+		expect(c.errorGrowthRate).toBe(99);
+	});
+	
+	it("can take a single argument being an array with between 0 and 4 values corresponding to parentTime, childTime, initialError and errorGrowthRate in that order", function() {
+		var c = new Correlation([]);
+		expect(c.parentTime).toBe(0);
+		expect(c.childTime).toBe(0);
+		expect(c.initialError).toBe(0);
+		expect(c.errorGrowthRate).toBe(0);
+
+		var c = new Correlation([5]);
+		expect(c.parentTime).toBe(5);
+		expect(c.childTime).toBe(0);
+		expect(c.initialError).toBe(0);
+		expect(c.errorGrowthRate).toBe(0);
+
+		var c = new Correlation([5,10]);
+		expect(c.parentTime).toBe(5);
+		expect(c.childTime).toBe(10);
+		expect(c.initialError).toBe(0);
+		expect(c.errorGrowthRate).toBe(0);
+
+		var c = new Correlation([5,10,7]);
+		expect(c.parentTime).toBe(5);
+		expect(c.childTime).toBe(10);
+		expect(c.initialError).toBe(7);
+		expect(c.errorGrowthRate).toBe(0);
+
+		var c = new Correlation([5,10,7,99]);
+		expect(c.parentTime).toBe(5);
+		expect(c.childTime).toBe(10);
+		expect(c.initialError).toBe(7);
+		expect(c.errorGrowthRate).toBe(99);
+		
+	});
+	
 	it("is immutable. parentTime, childTime, initialError and errorGrowthRate properties can be read but not set", function() {
 		var c = new Correlation(1,2,3,4);
 		
@@ -67,10 +132,6 @@ describe("Correlation", function() {
 
 		var c6 = c.butWith({errorGrowthRate:1000});
 		expect(c6).toEqual(new Correlation(1,2,3,1000));
-	});
-	
-	it("will throw an error if butWith() is called with a property in the provided object that is not one of parentTime, childTime, initialError and errorGrowthRate", function() {
-		expect(function() { new Correlation(1,2).butWith({flurble:5}) }).toThrow();
 	});
 	
 	

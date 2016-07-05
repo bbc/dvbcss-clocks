@@ -17,12 +17,12 @@ describe("DateNowClock", function() {
 
     it("can be created with no arguments, defaulting to 1kHz tickrate", function() {
         var dnc = new DateNowClock();
-        expect(dnc.getTickRate()).toBe(1000);
+        expect(dnc.tickRate).toBe(1000);
     });
     
     it("can be created with an object argument with a tickRate property", function() {
         var dnc = new DateNowClock({tickRate:5000});
-        expect(dnc.getTickRate()).toBe(5000);
+        expect(dnc.tickRate).toBe(5000);
     });
     
     it("reflects Date.now() scaled to the clock tickrate when now() is called", function() {
@@ -57,7 +57,7 @@ describe("DateNowClock", function() {
     it("returns null when getParent() is called", function() {
         var dnc = new DateNowClock({tickRate:1000000});
 
-        expect(dnc.getParent()).toBeNull();
+        expect(dnc.parent).toBeNull();
     });
     
     it("is available", function() {
@@ -69,19 +69,19 @@ describe("DateNowClock", function() {
     it("throws an error if you try to set availability to false", function() {
         var dnc = new DateNowClock({tickRate:1000000});
 
-        expect(function() { dnc.setAvailability(false); }).toThrow();
+        expect(function() { dnc.availabilityFlag = false; }).toThrow();
     });
     
     it("has speed 1.0", function() {
         var dnc = new DateNowClock({tickRate:1000000});
 
-        expect(dnc.getSpeed()).toBe(1);
+        expect(dnc.speed).toBe(1);
     });
     
     it("throws an error if you try to set speed", function() {
         var dnc = new DateNowClock({tickRate:1000000});
 
-        expect(function() { dnc.setSpeed(1.5); }).toThrow();
+        expect(function() { dnc.speed = 1.5; }).toThrow();
     });
     
     it("returns itself when getRoot() is called", function() {
@@ -108,7 +108,7 @@ describe("DateNowClock", function() {
 
         var now = dnc.now();
         var d1 = dnc.dispersionAtTime(now);
-        var d2 = dnc.dispersionAtTime(now+1000*dnc.getTickRate());
+        var d2 = dnc.dispersionAtTime(now+1000*dnc.tickRate);
         expect(d1).toEqual(d2);
     });
     

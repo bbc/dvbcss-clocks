@@ -38,6 +38,27 @@ ClockBase.prototype.now = function() {
     throw "Unimplemented";
 };
 
+Object.defineProperty(ClockBase.prototype, "speed", {
+    get: function() { return this.getSpeed(); },
+    set: function(v) { return this.setSpeed(v); },
+})
+
+Object.defineProperty(ClockBase.prototype, "tickRate", {
+    get: function() { return this.getTickRate(); },
+    set: function(v) { return this.setTickRate(v); },
+})
+
+Object.defineProperty(ClockBase.prototype, "parent", {
+    get: function() { return this.getParent(); },
+    set: function(v) { return this.setParent(v); },
+})
+
+Object.defineProperty(ClockBase.prototype, "availabilityFlag", {
+    get: function() { return this.getAvailabilityFlag(); },
+    set: function(v) { return this.setAvailabilityFlag(v); },
+})
+
+
 ClockBase.prototype.getSpeed = function() {
     return 1.0;
 };
@@ -77,7 +98,7 @@ ClockBase.prototype.isAvailable = function() {
     return this._availability && (!parent || parent.isAvailable());
 };
 
-ClockBase.prototype.setAvailability = function(availability) {
+ClockBase.prototype.setAvailabilityFlag = function(availability) {
     var isChange = (this._availability && !availability) || (!(this._availability) && availability);
     var parent = this.getParent();
     if (parent) {
@@ -185,6 +206,10 @@ ClockBase.prototype.fromParentTime = function(t) {
 };
 
 ClockBase.prototype.getParent = function() {
+    throw "Unimplemented";
+};
+
+ClockBase.prototype.setParent = function(newParent) {
     throw "Unimplemented";
 };
 

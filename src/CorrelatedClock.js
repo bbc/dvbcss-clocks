@@ -41,7 +41,7 @@ var CorrelatedClock = function(parent, options) {
     priv.parent = parent;
     
     if (options && (typeof options.correlation !== "undefined")) {
-        priv.corr = options.correlation;
+        priv.corr = new Correlation(options.correlation);
     } else {
         priv.corr = new Correlation(0,0,0,0);
     }
@@ -122,12 +122,18 @@ CorrelatedClock.prototype.rebaseCorrelationAt = function(t) {
     });
 };
 
+Object.defineProperty(CorrelatedClock.prototype, "correlation", {
+    get: function()  { return this.getCorrelation(); },
+    set: function(v) { return this.setCorrelation(v); }
+});
+
+
 CorrelatedClock.prototype.getCorrelation = function() {
     return PRIVATE.get(this).corr;
 };
 
 CorrelatedClock.prototype.setCorrelation = function(newCorrelation) {
-    PRIVATE.get(this).corr = newCorrelation;
+    PRIVATE.get(this).corr = new Correlation(newCorrelation);
     this.emit("change", this);
 };
 
@@ -193,6 +199,7 @@ CorrelatedClock.prototype.setParent = function(newParent) {
 
 CorrelatedClock.prototype.quantifyChange = function(newCorrelation, newSpeed) {
     var priv = PRIVATE.get(this);
+    var newCorrelation = new Correlation(newCorrelation);
 
     if (newSpeed != priv.speed) {
         return Number.POSITIVE_INFINITY;
