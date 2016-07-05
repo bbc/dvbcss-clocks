@@ -14,8 +14,7 @@ var PRIVATE = new WeakMap();
 
 /**
  * @exports Correlation
- *
- * Represents a correlation and any associated error/uncertainty.
+ * @class Correlation
  *
  * @classdesc
  * This is an immutable object representing a correlation.
@@ -180,6 +179,11 @@ Object.defineProperty(Correlation.prototype, "errorGrowthRate", {
     set: function(v) { throw "Cannot set this property, object is immutable. Use butWith() method."; }
 });
 
+/**
+ * Compare this correlation with another to check if they are the same.
+ * @param {Correlation} obj - another correlation to compare with.
+ * @returns {boolean} True if this correlation represents the same correlation and error/uncertainty as the one provided.
+ */
 Correlation.prototype.equals = function(obj) {
     var priv = PRIVATE.get(this);
     return priv.parentTime === obj.parentTime &&

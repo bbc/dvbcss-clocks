@@ -17,6 +17,41 @@ var PRIVATE = new WeakMap();
 
 var DATENOW_PRECISION = measurePrecision(Date.now.bind(Date), 100) / 1000;
 
+/**
+ * @exports DateNowClock
+ * @class DateNowClock
+ * @extends ClockBase
+ *
+ * @classdesc
+ * Root clock based on <tt>Date.now()</tt>
+ *
+ * <p>This clock can be used as the root of a hierarchy of clocks. It uses
+ * <tt>Date.now()</tt> as its underlying system clock. However this clock can
+ * be set to have its own tick rate, independent of <tt>Date.now()</tt>.
+ *
+ * <p>The precision of Date.now() is meausred when the module containing this
+ * class is first imported. The dispersion reported by this clock will always
+ * equal the measurement precision.
+ *
+ * @constructor
+ * @override
+ * @param {object} [options] Options for this clock
+ * @param {Number} [options.tickRate] Initial tick rate for this clock (in ticks per second).
+ * @param {Number} [options.maxFreqErrorPpm] The maximum frequency error of the underlying clock (in ppm).
+ * @default tickRate: 1000, maxFreqErrorPpm: 50
+ *
+ * @example
+ * // milliseconds (default)
+ * root = new DateNowClock({tickRate: 1000000000 }); 
+ *
+ * // nanoseconds
+ * root = new DateNowClock({tickRate: 1000000000 });
+ *
+ * // nanoseconds, lower freq error than default
+ * root = new DateNowClock({tickRate: 1000000000, maxFreqErrorPpm: 10 }); 
+ *
+ * @abstract
+ */
 var DateNowClock = function(options) {
     ClockBase.call(this);
     
@@ -35,7 +70,7 @@ var DateNowClock = function(options) {
     if (options && (typeof options.maxFreqErrorPpm !== "undefined")) {
         priv.maxFreqErrorPpm = options.maxFreqErrorPpm;
     } else {
-        priv.maxFreqErrorPpm = 500;
+        priv.maxFreqErrorPpm = 50;
     }
     
     priv.precision = DATENOW_PRECISION;
@@ -43,14 +78,23 @@ var DateNowClock = function(options) {
 
 inherits(DateNowClock, ClockBase);
 
+/**
+ * @inheritdoc
+ */
 DateNowClock.prototype.now = function() {
     return Date.now() / 1000 * PRIVATE.get(this).freq;
 };
 
+/**
+ * @inheritdoc
+ */
 DateNowClock.prototype.getTickRate = function() {
     return PRIVATE.get(this).freq;
 };
 
+/**
+ * @inheritdoc
+ */
 DateNowClock.prototype.calcWhen = function(t) {
     return t / PRIVATE.get(this).freq * 1000;
 };
@@ -60,26 +104,55 @@ DateNowClock.prototype.toString = function() {
     return "DateNowClock({tickRate:"+priv.freq+", maxFreqErrorPpm:"+priv.maxFreqErrorPpm+"}) ["+this.id+"]";
 };
 
+/**
+ * @inheritdoc
+ */
 DateNowClock.prototype.toParentTime = function(t) {
     throw "Clock has no parent.";
 };
 
+/**
+ * @inheritdoc
+ */
 DateNowClock.prototype.fromParentTime = function(t) {
     throw "Clock has no parent.";
 };
 
+/**
+ * @inheritdoc
+ */
 DateNowClock.prototype.getParent = function() {
     return null;
 };
 
-DateNowClock.prototype.setAvailabilityFlag = function(availability) {
-    throw "Cannot change availability of this clock.";
+/**
+ * The parent of this clock is always <tt>null</tt> and cannot be changed.
+ * @throws because this clock cannot have a parent.
+ */
+DateNowClock.prototype.setParent = function(newParent) {
+    throw "Cannot set a parent for this clock."
 };
 
+/**
+ * This clock is always available, and so its [availabilityFlag]{@link DateNowClock#availabilityFlag} cannot be changed.
+ * @throws because this clock cannot have its availabilty changed.
+ */
+DateNowClock.prototype.setAvailabilityFlag = function(availability) {
+    if (!availability) {
+        throw "Cannot change availability of this clock.";
+    }
+};
+
+/**
+ * @inheritdoc
+ */
 DateNowClock.prototype._errorAtTime = function(t) {
     return PRIVATE.get(this).precision;
 };
 
+/**
+ * @inheritdoc
+ */
 DateNowClock.prototype.getRootMaxFreqError = function() {
     return PRIVATE.get(this).maxFreqErrorPpm;
 };

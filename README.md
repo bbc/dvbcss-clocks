@@ -9,6 +9,19 @@
     
 Resulting library is placed in `dist/clocks.js`
 
+## Documentation
+
+JSDoc documentation can be built:
+
+    $ grunt jsdoc
+
+Documentation is generated and output as HTML into the `doc` subfolder.
+    
+## Unit tests
+
+Unit tests are written using the jasmine unit test framework.
+
+    $ grunt test
 
 ## Simple example
 
@@ -23,7 +36,7 @@ Resulting library is placed in `dist/clocks.js`
     
     # reset wall clock to zero now
 
-    wallClock.setCorrelation(new Correlation(sysClock.now(), 0));
+    wallClock.correlation = new Correlation(sysClock.now(), 0);
     console.log("Wall clock time = "+wallClock.now());
     
 

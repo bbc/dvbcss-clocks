@@ -16,7 +16,39 @@ var WeakMap = require('weakmap');
 var PRIVATE = new WeakMap();
 
 
-
+/**
+ * @exports CorrelatedClock
+ * @class CorrelatedClock
+ * @extends ClockBase
+ *
+ * @classdesc
+ * Clock based on a parent clock using a {@link Correlation}.
+ *
+ * <p>Blah blah
+ *
+ * @constructor
+ * @override
+ * @param {ClockBase} parent The parent for this clock.
+ * @param {object} [options] Options for this clock
+ * @param {Number} [options.tickRate] Initial tick rate for this clock (in ticks per second).
+ * @param {Number} [options.speed] The speed for this clock.
+ * @param {Correlation|object|Number[]} [options.correlation] Correlation for this clock as either as a Correlation object, or as an object with properties corresponding to the properties of a correlation, or as an array of values. See examples below
+ * @default tickRate: 1000, speed: 1.0, correlation: Correlation(0,0,0,0)
+ *
+ * @example
+ * root = new DateNowClock(); 
+ *
+ * // tickRate = 1000, correlation = (0,0)
+ * c1 = new CorrelatedClock(root);
+ *
+ * // tickRate = 25, speed=2.0, correlation = (0,0)
+ * c1 = new CorrelatedClock(root, {tickRate:25, speed:2.0});
+ *
+ * // tickRate = 1000, correlation = (10,500)
+ * c2 = new CorrelatedClock(root, { correlation: new Correlation(10,500) });
+ * c2 = new CorrelatedClock(root, { correlation: [10,500] });
+ * c2 = new CorrelatedClock(root, { correlation: {parentTime:10,childTime:500} });
+ */
 var CorrelatedClock = function(parent, options) {
     ClockBase.call(this);
 
@@ -70,6 +102,9 @@ var CorrelatedClock = function(parent, options) {
 
 inherits(CorrelatedClock, ClockBase);
 
+/**
+ * @inheritdoc
+ */
 CorrelatedClock.prototype.now = function() {
     var priv = PRIVATE.get(this);
     var corr = priv.corr;
@@ -87,10 +122,16 @@ CorrelatedClock.prototype.toString = function() {
     return "CorrelatedClock("+p+", {tickRate:"+priv.freq+", speed:"+priv.speed+", correlation:"+priv.corr+"}) ["+this.id+"]"
 };
 
+/**
+ * @inheritdoc
+ */
 CorrelatedClock.prototype.getSpeed = function() {
     return PRIVATE.get(this).speed;
 };
 
+/**
+ * @inheritdoc
+ */
 CorrelatedClock.prototype.setSpeed = function(newSpeed) {
     var priv = PRIVATE.get(this);
     if (priv.speed != newSpeed) {
@@ -99,10 +140,16 @@ CorrelatedClock.prototype.setSpeed = function(newSpeed) {
     }
 };
 
+/**
+ * @inheritdoc
+ */
 CorrelatedClock.prototype.getTickRate = function() {
     return PRIVATE.get(this).freq;
 };
 
+/**
+ * @inheritdoc
+ */
 CorrelatedClock.prototype.setTickRate = function(newTickRate) {
     var priv = PRIVATE.get(this);
     
@@ -122,21 +169,59 @@ CorrelatedClock.prototype.rebaseCorrelationAt = function(t) {
     });
 };
 
+/**
+ * @var {Correlation} correlation The correlation used by this clock to define its relationship to its parent.
+ * 
+ * <p>Read this property to obtain the correlation currently being used.
+ *
+ * <p>Change the correlation by setting this property to a new one. Either assign a {@link Correlation} object, or an object containing
+ * keys representing the properties of the correlation, or an Array containing the values for the correlation.
+ *
+ * <p>The underlying implementation fo this property uses the
+ * [getCorrelation]{@link ClockBase#getCorrelation} and
+ * [setCorrelation]{@link ClockBase#setCorrelation} methods.
+ *
+ * @memberof CorrelatedClock
+ * @instance
+ *
+ * @example
+ * clock = new CorrelatedClock(parentClock);
+ * clock.correlation = new Correlation(1,2);
+ * clock.correlation = [1,2];
+ * clock.correlation = { parentTime:1, childTime:2 };
+ * clock.correlation = clock.correlation.butWith({initialError:0.5, errorGrowthRate:0.1});
+ */
 Object.defineProperty(CorrelatedClock.prototype, "correlation", {
     get: function()  { return this.getCorrelation(); },
     set: function(v) { return this.setCorrelation(v); }
 });
 
-
+/**
+ * Retrieve the correlation for this clock.
+ * @returns {Correlation} correlation The correlation for this clock
+ */
 CorrelatedClock.prototype.getCorrelation = function() {
     return PRIVATE.get(this).corr;
 };
 
+/**
+ * Set/change the correlation for this clock.
+ * @param {Correlation} newCorrelation The new correlation for this clock
+ */
 CorrelatedClock.prototype.setCorrelation = function(newCorrelation) {
     PRIVATE.get(this).corr = new Correlation(newCorrelation);
     this.emit("change", this);
 };
 
+/**
+ * Set/change the correlation and speed for this clock as a single operation.
+ *
+ * <p>Using this method instead of setting both separately only generates a single
+ * "change" event notification.
+ *
+ * @param {Correlation} newCorrelation The new correlation for this clock
+ * @param {Number} newSpeed The new speed for this clock
+ */
 CorrelatedClock.prototype.setCorrelationAndSpeed = function(newCorrelation, newSpeed) {
     var priv = PRIVATE.get(this);
     
@@ -145,6 +230,9 @@ CorrelatedClock.prototype.setCorrelationAndSpeed = function(newCorrelation, newS
     this.emit("change",this);
 };
 
+/**
+ * @inheritdoc
+ */
 CorrelatedClock.prototype.calcWhen = function(t) {
     var priv = PRIVATE.get(this);
     
@@ -156,6 +244,9 @@ CorrelatedClock.prototype.calcWhen = function(t) {
     return priv.parent.calcWhen(refTime);
 };
 
+/**
+ * @inheritdoc
+ */
 CorrelatedClock.prototype.toParentTime = function(t) {
     var priv = PRIVATE.get(this);
     
@@ -166,15 +257,24 @@ CorrelatedClock.prototype.toParentTime = function(t) {
     }
 };
 
+/**
+ * @inheritdoc
+ */
 ClockBase.prototype.fromParentTime = function(t) {
     var priv = PRIVATE.get(this);
     return priv.corr.childTime + (t - priv.corr.parentTime) * priv.freq * priv.speed / priv.parent.getTickRate();
 };
 
+/**
+ * @inheritdoc
+ */
 CorrelatedClock.prototype.getParent = function() {
     return PRIVATE.get(this).parent;
 };
 
+/**
+ * @inheritdoc
+ */
 CorrelatedClock.prototype.setParent = function(newParent) {
     var priv = PRIVATE.get(this);
     
@@ -197,6 +297,20 @@ CorrelatedClock.prototype.setParent = function(newParent) {
     }
 };
 
+/**
+ * Calculate the potential for difference in tick values of this clock if a
+ * different correlation and speed were to be used.
+ *
+ * <p>If the new speed is different, even slightly, then this means that the
+ * ticks reported by this clock will eventually differ by infinity,
+ * and so the returned value will equal +infinity. If the speed is unchanged
+ * then the returned value reflects the difference between old and new correlations.
+ *
+ * @param {Correlation} newCorrelation A new correlation
+ * @param {Number} newSpeed A new speed
+ * @returns {Number} The potential difference in units of seconds. If speeds
+ * differ, this will always be <tt>Number.POSITIVE_INFINITY</tt>
+ */
 CorrelatedClock.prototype.quantifyChange = function(newCorrelation, newSpeed) {
     var priv = PRIVATE.get(this);
     var newCorrelation = new Correlation(newCorrelation);
@@ -216,11 +330,25 @@ CorrelatedClock.prototype.quantifyChange = function(newCorrelation, newSpeed) {
     }
 };
 
+/**
+ * Returns True if the potential for difference in tick values of this clock
+ * (using a new correlation and speed) exceeds a specified threshold.
+ *
+ * <p>This is implemented by applying a threshold to the output of 
+ * [quantifyChange()]{@link CorrelatedClock#quantifyChange}.
+ *         
+ * @param {Correlation} newCorrelation A new correlation
+ * @param {Number} newSpeed A new speed
+ * @returns {Boolean} True if the potential difference can/will eventually exceed the threshold.
+ */
 CorrelatedClock.prototype.isChangeSignificant = function(newCorrelation, newSpeed, thresholdSecs) {
     var delta = this.quantifyChange(newCorrelation, newSpeed);
     return delta > thresholdSecs;
 };
 
+/**
+ * @inheritdoc
+ */
 CorrelatedClock.prototype._errorAtTime = function(t) {
     var priv = PRIVATE.get(this);
 
