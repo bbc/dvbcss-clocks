@@ -153,7 +153,7 @@ describe("For hierarchies of clocks", function() {
         expect(b4t2).toBeCloseTo(b4t1 + 2000, 5);
     });
     
-    it("propagates availability throuhg a hierarchy", function() {
+    it("propagates availability throuhg a hierarchy causing 'available' and 'unavailable' events when availability changes, but not causing 'change' events", function() {
         var a = new DateNowClock();
         var b = new CorrelatedClock(a);
         var c = new CorrelatedClock(b);
@@ -200,10 +200,10 @@ describe("For hierarchies of clocks", function() {
         expect(b.isAvailable()).toBeTruthy();
         expect(c.isAvailable()).toBeFalsy();
         expect(d.isAvailable()).toBeFalsy();
-        [aa,ua,ca,ab,ub,cb,ac,ad].forEach(function(callback) {
+        [aa,ua,ca,ab,ub,cb,,cc,ac,ad,cd].forEach(function(callback) {
              expect(callback).not.toHaveBeenCalled();
          });
-        [uc,cc,ud,cd].forEach(function(callback) {
+        [uc,ud].forEach(function(callback) {
              expect(callback).toHaveBeenCalled();
              callback.calls.reset();
          });
@@ -214,10 +214,10 @@ describe("For hierarchies of clocks", function() {
          });
          
          c.availabilityFlag = true;
-        [aa,ua,ca,ab,ub,cb,uc,ad,ud].forEach(function(callback) {
+        [aa,ua,ca,ab,ub,cb,cc,uc,cd,ad,ud].forEach(function(callback) {
              expect(callback).not.toHaveBeenCalled();
          });
-        [ac,cc,cd].forEach(function(callback) {
+        [ac].forEach(function(callback) {
              expect(callback).toHaveBeenCalled();
              callback.calls.reset();
          });

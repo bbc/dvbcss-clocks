@@ -19,12 +19,57 @@ var nextTimeoutHandle = 0;
 
 
 /**
+ * There has been a change in the timing of this clock.
+ * This might be due to a change made directly to this clock, or a change
+ * made to a parent in the hierarchy that affected this clock.
+ *
+ * <p>Causes of changes to clocks include: changes to
+ * [speed]{@link ClockBase#speed},
+ * [tick rate]{@link ClockBase#tickRate},
+ * [correlation]{@link CorrelatedClock#correlation}, or
+ * [parentage]{@link ClockBase#parent}.
+ * Changes to availability do not cause this event to fire.
+ *
+ * <p>The following parameters are passed as arguments to the event handler:
+ * @event change
+ * @param {ClockBase} source The clock that fired the event.
+ */
+
+/**
+ * This clock has become available.
+ * 
+ * This might be because [availabilityFlag]{@link ClockBase#availabilityFlag}
+ * became true for this clock, or one of its parents in the hierarchy, causing this
+ * clock and all its parents to now be flagged as available.
+ *
+ * <p>The following parameters are passed as arguments to the event handler:
+ * @event available
+ * @param {ClockBase} source The clock that fired the event.
+ */
+
+/**
+ * This clock has become unavailable.
+ * 
+ * This might be because [availabilityFlag]{@link ClockBase#availabilityFlag}
+ * became false for this clock, or one of its parents in the hierarchy.
+ *
+ * <p>The following parameters are passed as arguments to the event handler:
+ * @event unavailable
+ * @param {ClockBase} source The clock that fired the event.
+ */
+
+
+/**
  * @module clocks
  * @exports ClockBase
  * @class ClockBase
  *
  * @classdesc
- * Base class for clock implementations
+ * Abstract Base class for clock implementations.
+ *
+ * <p>Implementations that can be used are:
+ * {@link DateNowClock} and
+ * {@link CorrelatedClock}.
  *
  * <p>This is the base class on which other clocks are implemented. It provides
  * the basic framework of properties, getter and setters for common properties
@@ -53,6 +98,8 @@ var nextTimeoutHandle = 0;
  *   [fromParentTime()]{@link ClockBase#fromParentTime}
  *   [_errorAtTime()]{@link ClockBase#_errorAtTime}
  *
+ * @listens change
+
  * @constructor
  * @abstract
  */
@@ -63,6 +110,13 @@ var ClockBase = function() {
     var priv = PRIVATE.get(this);
 
     this._availability = true;
+    
+    /**
+     * Every clock instance has a unique ID assigned to it for convenience. This is always of the form "clock_N" where N is a unique number.
+     * @var {String} id
+     * @memberof ClockBase
+     * @instance
+     */
     this.id = "clock_"+nextIdNum;
     nextIdNum = nextIdNum+1;
     
@@ -247,7 +301,6 @@ ClockBase.prototype.isAvailable = function() {
  * [isAvailable]{@link ClockBase#isAvailable} method.
  *
  * @param {Boolean} availability The availability flag for this clock
- * @fires change
  * @fires unavailable
  * @fires available
  */
@@ -262,39 +315,10 @@ ClockBase.prototype.setAvailabilityFlag = function(availability) {
     
     if (isChange) {
         if (availability) {
-            /**
-             * This clock has become available.
-             * 
-             * This might be because [availabilityFlag]{@link ClockBase#availabilityFlag}
-             * became true for this clock, or one of its parents in the hierarchy, causing this
-             * clock and all its parents to now be flagged as available.
-             * @event available
-             */
             this.emit("available", this);
         } else {
-            /**
-             * This clock has become unavailable.
-             * 
-             * This might be because [availabilityFlag]{@link ClockBase#availabilityFlag}
-             * became false for this clock, or one of its parents in the hierarchy.
-             * @event unavailable
-             */
             this.emit("unavailable", this);
         }
-        /**
-         * There has been a change in the timing or availability of this clock.
-         * This might be due to a change made directly to this clock, or a change
-         * made to a parent in the hierarchy that affected this clock.
-         *
-         * <p>Causes of changes to clocks include: changes to
-         * [availability]{@link ClockBase#availabilityFlag},
-         * [speed]{@link ClockBase#speed},
-         * [tick rate]{@link ClockBase#tickRate},
-         * [correlation]{@link CorrelatedClock#correlation}, or
-         * [parentage]{@link ClockBase#parent}.
-         * @event change
-         */
-        this.emit("change", this);
     }
 };
 

@@ -23,7 +23,8 @@ var DATENOW_PRECISION = measurePrecision(Date.now.bind(Date), 100) / 1000;
  * @extends ClockBase
  *
  * @classdesc
- * Root clock based on <tt>Date.now()</tt>
+ * Root clock based on <tt>Date.now()</tt>.
+ * It is a subclass of {@link ClockBase}.
  *
  * <p>This clock can be used as the root of a hierarchy of clocks. It uses
  * <tt>Date.now()</tt> as its underlying system clock. However this clock can
@@ -99,6 +100,13 @@ DateNowClock.prototype.calcWhen = function(t) {
     return t / PRIVATE.get(this).freq * 1000;
 };
 
+/**
+ * @returns {String} A human readable summary of this clock object, including its [id]{@link DateNowClock#id} and its current properties
+ * @example
+ * > c=new DateNowClock();
+ * > c.toString()
+ * 'DateNowClock({tickRate:1000, maxFreqErrorPpm:50}) [clock_0]'
+ */
 DateNowClock.prototype.toString = function() {
     var priv = PRIVATE.get(this);
     return "DateNowClock({tickRate:"+priv.freq+", maxFreqErrorPpm:"+priv.maxFreqErrorPpm+"}) ["+this.id+"]";

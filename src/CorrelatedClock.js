@@ -23,6 +23,7 @@ var PRIVATE = new WeakMap();
  *
  * @classdesc
  * Clock based on a parent clock using a {@link Correlation}.
+ * It is a subclass of {@link ClockBase}.
  *
  * <p>The correlation determines how the time of this clock is calculated from
  * the time of the parent clock.
@@ -40,9 +41,6 @@ var PRIVATE = new WeakMap();
  *
  * 
  *
- * @listens change
- * @listens available
- * @listens unavailable
  *
  * @constructor
  * @override
@@ -130,6 +128,13 @@ CorrelatedClock.prototype.now = function() {
     return corr.childTime + (priv.parent.now() - corr.parentTime) * priv.freq * priv.speed / priv.parent.getTickRate();
 };
 
+/**
+ * @returns {String} A human readable summary of this clock object, including its [id]{@link CorrelatedClock#id} and its current properties
+ * @example
+ * > c=new CorrelatedClock(parent);
+ * > c.toString()
+ * 'CorrelatedClock(clock_0, {tickRate:1000, speed:1, correlation:[object Object]}) [clock_1]'
+ */
 CorrelatedClock.prototype.toString = function() {
     var priv = PRIVATE.get(this);
     if (priv.parent) {
