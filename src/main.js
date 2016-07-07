@@ -14,16 +14,16 @@ var CorrelatedClock = require("CorrelatedClock");
 var Correlation = require("Correlation");
 
 /**
- * @module clocks
+ * @module dvbcss-clocks
  *
  * @description
- * The clocks library consists of this module containing the clock classes:
+ * The dvbcss-clocks library consists of this module containing the clock classes:
  *
  * <ul>
- *   <li> clocks.{@link ClockBase} - base class for all clock implementations.
- *   <li> clocks.{@link DateNowClock} - a root clock based on <tt>Date.now()</tt>
- *   <li> clocks.{@link CorrelatedClock} - a clock based on a parent using a correlation.
- *   <li> clocks.{@link Correlation} - a correlation.
+ *   <li> dvbcss-clocks.{@link ClockBase} - base class for all clock implementations.
+ *   <li> cdvbcss-locks.{@link DateNowClock} - a root clock based on <tt>Date.now()</tt>
+ *   <li> dvbcss-clocks.{@link CorrelatedClock} - a clock based on a parent using a correlation.
+ *   <li> dvbcss-clocks.{@link Correlation} - a correlation.
  * </ul>
  *
  * <p>Clock can be built into hierarchies, where one clock is the root, and other

@@ -27,14 +27,14 @@ module.exports = function(grunt) {
       lib: {
         context: __dirname + "/build/lib",
         entry: {
-          'clocks' :
+          'dvbcss-clocks' :
             ['./main.js']
         },
         output: {
           path: __dirname + "/dist",
           filename: "[name].js",
           chunkFilename: "chunk-[name]-[chunkhash].js",
-          library: 'clocks',
+          library: 'dvbcss-clocks',
           libraryTarget: 'umd'
         },
         module: {

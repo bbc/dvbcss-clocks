@@ -1,8 +1,8 @@
 {
-  "name": "clocks",
+  "name": "dvbcss-clocks",
   "version": "0.0.1",
   "description": "Library implementing clock objects",
-  "main": "dist/clocks.js",
+  "main": "src/main.js",
   "scripts": {},
   "author": {
     "name": "Matt Hammond",

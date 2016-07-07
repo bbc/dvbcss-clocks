@@ -5,10 +5,43 @@ done for [pydvbcss](https://github.com/bbc/pydvbcss).
 
 ## Getting started
 
+### 1. Download and install dependencies
+
+First download and then install dependencies:
+
+    $ cd dvbcss-clocks
     $ npm install
+
+### 2. EITHER: Build for the browser
+
+If you wish to build it into a single JS file suitable for including in a 
+webpage, then do this:
+
     $ grunt
     
-Resulting library is placed in `dist/clocks.js`
+Resulting library is placed in `dist/dvbcss-clocks.js`.
+
+### OR: use in another project
+
+Alternatively, use this as a dependency in the package.json of your own
+project. First make it available to your local npm installation.
+
+    $ npm link
+    
+Make sure it is included as a dependency in package.json:
+
+    ...
+    "dependencies": {
+        ...
+        "clocks": "^0.0.1",
+        ...
+    }
+    
+Ask npm to link it:
+
+    $ npm link dvbcss-clocks
+
+
 
 ## Documentation
 
@@ -28,15 +61,16 @@ Unit tests are written using the jasmine unit test framework.
 
 Here is a quick walkthrough. First we import the modules:
 
-    var DateNowClock    = require("clocks").DateNowClock;
-    var Correlation     = require("clocks").Correlation;
-    var CorrelatedClock = require("clocks").CorrelatedClock;
+    var CLOCKS = require("dvbcss-clocks")
+    var DateNowClock    = CLOCKS.DateNowClock;
+    var Correlation     = CLOCKS.Correlation;
+    var CorrelatedClock = CLOCKS.CorrelatedClock;
 
 Now we create a simple hierarchy with one clock at the root and another one
 based on it via a correlation:
     
-    var sysClock = new clocks.DateNowClock({tickRate:1000000000, maxFreqErrorPpm:50});
-    var wallClock = new clocks.CorrelatedClock({tickRate:1000000000});
+    var sysClock = new DateNowClock({tickRate:1000000000, maxFreqErrorPpm:50});
+    var wallClock = new CorrelatedClock({tickRate:1000000000});
     
     console.log("Wall clock time = "+wallClock.now());
     
