@@ -8,10 +8,10 @@
  * limitations under the License.
  ****************************************************************************/
 
-var ClockBase = require("ClockBase");
-var DateNowClock = require("DateNowClock");
-var CorrelatedClock = require("CorrelatedClock");
-var Correlation = require("Correlation");
+var ClockBase = require("./ClockBase");
+var DateNowClock = require("./DateNowClock");
+var CorrelatedClock = require("./CorrelatedClock");
+var Correlation = require("./Correlation");
 
 /**
  * @module dvbcss-clocks
