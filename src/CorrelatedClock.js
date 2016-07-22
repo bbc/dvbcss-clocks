@@ -304,7 +304,7 @@ CorrelatedClock.prototype.setParent = function(newParent) {
     if (priv.parent != newParent) {
         if (priv.parent) {
             for(event in priv.parentHandlers) {
-                priv.parent.off(event, priv.parentHandlers[event]);
+                priv.parent.removeListener(event, priv.parentHandlers[event]);
             }
         }
 
