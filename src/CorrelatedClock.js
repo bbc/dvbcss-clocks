@@ -324,6 +324,41 @@ CorrelatedClock.prototype.setParent = function(newParent) {
  * Calculate the potential for difference in tick values of this clock if a
  * different correlation and speed were to be used.
  *
+ * Changes where the new time would become greater return positive values.
+ *
+ * <p>If the new speed is different, even slightly, then this means that the
+ * ticks reported by this clock will eventually differ by infinity,
+ * and so the returned value will equal ±infinity. If the speed is unchanged
+ * then the returned value reflects the difference between old and new correlations.
+ *
+ * @param {Correlation} newCorrelation A new correlation
+ * @param {Number} newSpeed A new speed
+ * @returns {Number} The potential difference in units of seconds. If speeds
+ * differ, this will always be <tt>Number.POSITIVE_INFINITY</tt> or <tt>Number.NEGATIVE_INFINITY</tt>
+ */
+CorrelatedClock.prototype.quantifySignedChange = function(newCorrelation, newSpeed) {
+    var priv = PRIVATE.get(this);
+    var newCorrelation = new Correlation(newCorrelation);
+
+    if (newSpeed != priv.speed) {
+        return (newSpeed > priv.speed) ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
+    } else {
+        var nx = newCorrelation.parentTime;
+        var nt = newCorrelation.childTime;
+        if (newSpeed != 0) {
+            var ox = this.toParentTime(nt);
+            return (nx-ox) / priv.parent.getTickRate();
+        } else {
+            var ot = this.fromParentTime(nx);
+            return (nt-ot) / priv.freq;
+        }
+    }
+};
+
+/**
+ * Calculate the absolute value of the potential for difference in tick values of this
+ * clock if a different correlation and speed were to be used.
+ *
  * <p>If the new speed is different, even slightly, then this means that the
  * ticks reported by this clock will eventually differ by infinity,
  * and so the returned value will equal +infinity. If the speed is unchanged
@@ -335,22 +370,7 @@ CorrelatedClock.prototype.setParent = function(newParent) {
  * differ, this will always be <tt>Number.POSITIVE_INFINITY</tt>
  */
 CorrelatedClock.prototype.quantifyChange = function(newCorrelation, newSpeed) {
-    var priv = PRIVATE.get(this);
-    var newCorrelation = new Correlation(newCorrelation);
-
-    if (newSpeed != priv.speed) {
-        return Number.POSITIVE_INFINITY;
-    } else {
-        var nx = newCorrelation.parentTime;
-        var nt = newCorrelation.childTime;
-        if (newSpeed != 0) {
-            var ox = this.toParentTime(nt);
-            return Math.abs(nx-ox) / priv.parent.getTickRate();
-        } else {
-            var ot = this.fromParentTime(nx);
-            return Math.abs(nt-ot) / priv.freq;
-        }
-    }
+    return Math.abs(this.quantifySignedChange(newCorrelation, newSpeed));
 };
 
 /**
