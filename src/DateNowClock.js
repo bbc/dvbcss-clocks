@@ -12,7 +12,7 @@ var inherits = require('inherits');
 var ClockBase = require('./ClockBase');
 var measurePrecision = require('./measurePrecision');
 
-var WeakMap = require('weakmap');
+var WeakMap = require('weak-map');
 var PRIVATE = new WeakMap();
 
 var DATENOW_PRECISION = measurePrecision(Date.now.bind(Date), 100) / 1000;

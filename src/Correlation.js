@@ -8,7 +8,7 @@
  * limitations under the License.
  ****************************************************************************/
 
-var WeakMap = require('weakmap');
+var WeakMap = require('weak-map');
 var PRIVATE = new WeakMap();
 
 

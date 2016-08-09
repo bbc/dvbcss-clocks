@@ -11,7 +11,7 @@
 var EventEmitter = require("events");
 var inherits = require('inherits');
 
-var WeakMap = require('weakmap');
+var WeakMap = require('weak-map');
 var PRIVATE = new WeakMap();
 
 var nextIdNum = 0;
