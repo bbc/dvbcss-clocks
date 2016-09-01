@@ -376,7 +376,7 @@ CorrelatedClock.prototype._errorAtTime = function(t) {
     var priv = PRIVATE.get(this);
 
     var pt = this.toParentTime(t);
-    var deltaSecs = (pt - priv.corr.parentTime) / priv.parent.getTickRate();
+    var deltaSecs = Math.abs(pt - priv.corr.parentTime) / priv.parent.getTickRate();
     return priv.corr.initialError + deltaSecs * priv.corr.errorGrowthRate;
 };
 

@@ -323,6 +323,20 @@ describe("CorrelatedClock - setTimeout, clearTimeout", function() {
         
     });
 
+	it("reports the same dispersion as its parent when the correlation specifies zero error contribution", function() {
+        var dnc = new DateNowClock({tickRate:1000});
+        var c = new CorrelatedClock(dnc, {tickRate:1000,correlation:new Correlation(0,0)});
+		expect(c.dispersionAtTime(10)).toEqual(dnc.dispersionAtTime(10));
+		expect(c.dispersionAtTime(20)).toEqual(dnc.dispersionAtTime(20));		
+	});
+	
+	it("reports a greater dispersion than its parent when the correlation specified non zero error contribution, and it does so for times on both sides of the correlation (before and after the point of correlation)", function() {
+        var dnc = new DateNowClock({tickRate:1000});
+        var c = new CorrelatedClock(dnc, {tickRate:1000,correlation:new Correlation(0, 0, 0.5, 0.1)});
+		expect(c.dispersionAtTime(10)).toEqual(dnc.dispersionAtTime(10) + 0.5 + 0.1*10/1000);
+		expect(c.dispersionAtTime(20)).toEqual(dnc.dispersionAtTime(20) + 0.5 + 0.1*20/1000);
+		expect(c.dispersionAtTime(-10)).toEqual(dnc.dispersionAtTime(-10) + 0.5 + 0.1*10/1000);
+	});
 
 });
 
