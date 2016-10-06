@@ -632,6 +632,9 @@ ClockBase.prototype.setAtTime = function(func, when) {
 	}
 ;
 	var numRootTicks = self.toRootTime(when) - root.now()
+	if (numRootTicks != 0) {
+		numRootTicks = root.getSpeed() != 0 ? numRootTicks / root.getSpeed() : NaN;
+	}
 	var millis = numRootTicks * (1000 / root.getTickRate());
 	var realHandle;
 	if (!isNaN(millis)) {
@@ -661,6 +664,9 @@ ClockBase.prototype._rescheduleTimers = function() {
 
 			// re-calculate when this timer is due and re-schedule
 			var numRootTicks = this.toRootTime(d.when) - root.now();
+			if (numRootTicks != 0) {
+				numRootTicks = root.getSpeed() != 0 ? numRootTicks / root.getSpeed() : NaN;
+			}
 			var millis = numRootTicks * (1000 / root.getTickRate());
 			if (!isNaN(millis)) {
 				d.realHandle = setTimeout(d.callback, Math.max(0,millis));
