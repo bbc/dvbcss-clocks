@@ -258,13 +258,8 @@ CorrelatedClock.prototype.setCorrelationAndSpeed = function(newCorrelation, newS
  */
 CorrelatedClock.prototype.calcWhen = function(t) {
     var priv = PRIVATE.get(this);
-    
-    if (priv.speed == 0) {
-        var refTime = priv.corr.parentTime;
-    } else {
-        var refTime = priv.corr.parentTime + (t - priv.corr.childTime) * priv.parent.getTickRate() / priv.freq / priv.speed;
-    }
-    return priv.parent.calcWhen(refTime);
+
+    return priv.parent.calcWhen(this.toParentTime(t));
 };
 
 /**
@@ -272,9 +267,9 @@ CorrelatedClock.prototype.calcWhen = function(t) {
  */
 CorrelatedClock.prototype.toParentTime = function(t) {
     var priv = PRIVATE.get(this);
-    
+
     if (priv.speed == 0) {
-        return priv.corr.parentTime;
+        return (t === priv.corr.childTime) ? priv.corr.parentTime : NaN;
     } else {
         return priv.corr.parentTime + (t - priv.corr.childTime) * priv.parent.getTickRate() / priv.freq / priv.speed;
     }
