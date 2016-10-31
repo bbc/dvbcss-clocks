@@ -162,7 +162,14 @@ describe("CorrelatedClock", function() {
         });
         
         expect(c.toParentTime(400)).toEqual(50 + (400-300)*2000);
-        
+
+        c = new CorrelatedClock(root, {
+            tickRate: 1000,
+            correlation: new Correlation(50,300),
+            speed: 0
+        });
+        expect(c.toParentTime(300)).toEqual(50);
+        expect(c.toParentTime(400)).toBeNaN();
     })
     
     it("can convert a time from that of its parent", function() {
@@ -177,7 +184,14 @@ describe("CorrelatedClock", function() {
         });
         
         expect(c.fromParentTime(50 + (400-300)*2000)).toEqual(400);
-        
+
+        c = new CorrelatedClock(root, {
+            tickRate: 1000,
+            correlation: new Correlation(50,300),
+            speed: 0
+        });
+        expect(c.fromParentTime(50)).toEqual(300);
+        expect(c.fromParentTime(100)).toEqual(300);
     });
     
     it("can return its parent", function() {
@@ -321,6 +335,51 @@ describe("CorrelatedClock - setTimeout, clearTimeout", function() {
         jasmine.clock().tick(0);
         expect(callback).toHaveBeenCalledWith("hello");
         
+    });
+
+    it("A change of speed to 0 prevent advancing of a timer works", function() {
+        var dateNowSpy = spyOn(Date, 'now');
+        var callback = jasmine.createSpy("tc");
+
+        var dnc = new DateNowClock({tickRate:1000});
+        var c = new CorrelatedClock(dnc, {tickRate:1000,correlation:new Correlation(0,100)});
+
+        dateNowSpy.and.returnValue(500);
+        c.setTimeout(callback, 1000, "hello");
+
+        dateNowSpy.and.returnValue(500+999);
+        jasmine.clock().tick(999);
+        expect(callback).not.toHaveBeenCalled();
+
+        c.setSpeed(0);
+        dateNowSpy.and.returnValue(500+999+10000);
+        jasmine.clock().tick(10000);
+        expect(callback).not.toHaveBeenCalled();
+
+        c.setSpeed(1);
+        dateNowSpy.and.returnValue(500+999+10000+1);
+        jasmine.clock().tick(1);
+        expect(callback).toHaveBeenCalledWith("hello");
+    });
+
+    it("A change of speed of the root clock to advance of a timer works", function() {
+        var dateNowSpy = spyOn(Date, 'now');
+        var callback = jasmine.createSpy("tc");
+
+        var dnc = new DateNowClock({tickRate:1000});
+        dnc.getSpeed = function() { return 0.5; }
+        var c = new CorrelatedClock(dnc, {tickRate:1000,correlation:new Correlation(0,100)});
+
+        dateNowSpy.and.returnValue(500);
+        c.setTimeout(callback, 1000, "hello");
+
+        dateNowSpy.and.returnValue(500+999);
+        jasmine.clock().tick(999*2);
+        expect(callback).not.toHaveBeenCalled();
+
+        dateNowSpy.and.returnValue(500+999+1);
+        jasmine.clock().tick(1*2);
+        expect(callback).toHaveBeenCalledWith("hello");
     });
 
 	it("reports the same dispersion as its parent when the correlation specifies zero error contribution", function() {
