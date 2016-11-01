@@ -263,7 +263,15 @@ CorrelatedClock.prototype.calcWhen = function(t) {
 };
 
 /**
- * @inheritdoc
+ * Convert time value of this clock to the equivalent time of its parent.
+ *
+ * <p>If this clock's speed is zero (meaning that it is paused) then if <tt>t</tt>
+ * does not equal the current time of this clock, then <tt>NaN</tt> will be returned.
+ * This is because there is no equivalent time of the parent clock.
+ *
+ * @param {Number} t Time value of this clock
+ * @returns {Number} corresponding time of the parent clock or <tt>NaN</tt> if not possible when clock speed is zero.
+ * @abstract
  */
 CorrelatedClock.prototype.toParentTime = function(t) {
     var priv = PRIVATE.get(this);

@@ -342,7 +342,7 @@ ClockBase.prototype.getAvailabilityFlag = function() {
  * this method converts the supplied time to be in the same units as <tt>Date.now()</tt>.
  *
  * @param {Number} ticksWhen Time value of this clock.
- * @return {Number} The corresponding time value in the units of the underlying system clock that is being used by the root clock
+ * @return {Number} The corresponding time value in the units of the underlying system clock that is being used by the root clock, or <tt>NaN</tt> if this conversion is not possible.
  * @abstract
  */
 ClockBase.prototype.calcWhen = function(ticksWhen) {
@@ -384,7 +384,7 @@ ClockBase.prototype.fromRootTime = function(t) {
 /**
  * Convert a time for this clock to a time for the root clock.
  * @param {Number} t A time value for this clock.
- * @returns {Number} The corresponding time value of the root clock.
+ * @returns {Number} The corresponding time value of the root clock, or <tt>NaN</tt> if this is not possible.
  */
 ClockBase.prototype.toRootTime = function(t) {
     var p = this.getParent();
@@ -400,7 +400,7 @@ ClockBase.prototype.toRootTime = function(t) {
  * Convert a time value for this clock to a time value for any other clock in the same hierarchy as this one.
  * @param {ClockBase} otherClock The clock to convert the value value to.
  * @param {Number} t Time value of this clock.
- * @returns {Number} The corresponding time value for the specified <tt>otherClock</tt>
+ * @returns {Number} The corresponding time value for the specified <tt>otherClock</tt>, or <tt>NaN</tt> if this is not possible.
  * @throws if this clock is not part of the same hierarchy as the other clock.
  */
 ClockBase.prototype.toOtherClockTime = function(otherClock, t) {
@@ -451,8 +451,9 @@ ClockBase.prototype.getAncestry = function() {
 
 /**
  * Convert time value of this clock to the equivalent time of its parent.
+ *
  * @param {Number} t Time value of this clock
- * @returns {Number} corresponding time of the parent clock.
+ * @returns {Number} corresponding time of the parent clock, or <tt>NaN</tt> if this is not possible.
  * @abstract
  */
 ClockBase.prototype.toParentTime = function(t) {
