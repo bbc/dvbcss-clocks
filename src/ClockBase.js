@@ -659,7 +659,7 @@ ClockBase.prototype._rescheduleTimers = function() {
 			var d = priv.timerHandles[handle];
 
 			// clear existing timer
-			if (d.realHandle != null) {
+			if (d.realHandle !== null && d.realHandle !== undefined) {
 				clearTimeout(d.realHandle);
 			}
 
