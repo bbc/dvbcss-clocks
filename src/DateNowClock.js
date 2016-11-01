@@ -138,7 +138,7 @@ DateNowClock.prototype.getParent = function() {
  * @throws because this clock cannot have a parent.
  */
 DateNowClock.prototype.setParent = function(newParent) {
-    throw "Cannot set a parent for this clock."
+    throw "Cannot set a parent for this clock.";
 };
 
 /**

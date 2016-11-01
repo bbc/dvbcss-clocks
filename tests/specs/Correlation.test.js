@@ -12,7 +12,7 @@ var Correlation = require("Correlation");
 
 describe("Correlation", function() {
 	it("exists", function() {
-		expect(Correlation).toBeDefined()
+		expect(Correlation).toBeDefined();
 	});
     
 	it("takes two arguments that set the parentTime and childTime properties, and the initialError and errorGrowthRate default to zero.", function() {
@@ -32,31 +32,33 @@ describe("Correlation", function() {
 	});
 	
 	it("can take a single argument being an object with properties parentTime, childTime, initialError and errorGrowthRate, or a subset thereof", function() {
-		var c = new Correlation({});
+		var c;
+
+		c = new Correlation({});
 		expect(c.parentTime).toBe(0);
 		expect(c.childTime).toBe(0);
 		expect(c.initialError).toBe(0);
 		expect(c.errorGrowthRate).toBe(0);
 
-		var c = new Correlation({parentTime:5});
+		c = new Correlation({parentTime:5});
 		expect(c.parentTime).toBe(5);
 		expect(c.childTime).toBe(0);
 		expect(c.initialError).toBe(0);
 		expect(c.errorGrowthRate).toBe(0);
 
-		var c = new Correlation({parentTime:5, childTime:10});
+		c = new Correlation({parentTime:5, childTime:10});
 		expect(c.parentTime).toBe(5);
 		expect(c.childTime).toBe(10);
 		expect(c.initialError).toBe(0);
 		expect(c.errorGrowthRate).toBe(0);
 
-		var c = new Correlation({parentTime:5, childTime:10, initialError:7});
+		c = new Correlation({parentTime:5, childTime:10, initialError:7});
 		expect(c.parentTime).toBe(5);
 		expect(c.childTime).toBe(10);
 		expect(c.initialError).toBe(7);
 		expect(c.errorGrowthRate).toBe(0);
 
-		var c = new Correlation({parentTime:5, childTime:10, initialError:7, errorGrowthRate:99});
+		c = new Correlation({parentTime:5, childTime:10, initialError:7, errorGrowthRate:99});
 		expect(c.parentTime).toBe(5);
 		expect(c.childTime).toBe(10);
 		expect(c.initialError).toBe(7);
@@ -64,31 +66,33 @@ describe("Correlation", function() {
 	});
 	
 	it("can take a single argument being an array with between 0 and 4 values corresponding to parentTime, childTime, initialError and errorGrowthRate in that order", function() {
-		var c = new Correlation([]);
+		var c;
+		
+		c = new Correlation([]);
 		expect(c.parentTime).toBe(0);
 		expect(c.childTime).toBe(0);
 		expect(c.initialError).toBe(0);
 		expect(c.errorGrowthRate).toBe(0);
 
-		var c = new Correlation([5]);
+		c = new Correlation([5]);
 		expect(c.parentTime).toBe(5);
 		expect(c.childTime).toBe(0);
 		expect(c.initialError).toBe(0);
 		expect(c.errorGrowthRate).toBe(0);
 
-		var c = new Correlation([5,10]);
+		c = new Correlation([5,10]);
 		expect(c.parentTime).toBe(5);
 		expect(c.childTime).toBe(10);
 		expect(c.initialError).toBe(0);
 		expect(c.errorGrowthRate).toBe(0);
 
-		var c = new Correlation([5,10,7]);
+		c = new Correlation([5,10,7]);
 		expect(c.parentTime).toBe(5);
 		expect(c.childTime).toBe(10);
 		expect(c.initialError).toBe(7);
 		expect(c.errorGrowthRate).toBe(0);
 
-		var c = new Correlation([5,10,7,99]);
+		c = new Correlation([5,10,7,99]);
 		expect(c.parentTime).toBe(5);
 		expect(c.childTime).toBe(10);
 		expect(c.initialError).toBe(7);

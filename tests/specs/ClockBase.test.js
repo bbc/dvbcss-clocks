@@ -25,21 +25,22 @@ describe("ClockBase", function() {
 	it("calls through to get/set methods when tickRate, speed, availabilityFlag, parent properties are gotten or set", function() {
 		var c = new ClockBase();
 		var spy;
+		var _;
 		
 		spy = spyOn(c, "getTickRate");
-		var _ = c.tickRate;
+		_ = c.tickRate;
 		expect(spy).toHaveBeenCalled();
 		
 		spy = spyOn(c, "getSpeed");
-		var _ = c.speed;
+		_ = c.speed;
 		expect(spy).toHaveBeenCalled();
 		
 		spy = spyOn(c, "getAvailabilityFlag");
-		var _ = c.availabilityFlag;
+		_ = c.availabilityFlag;
 		expect(spy).toHaveBeenCalled();
 		
 		spy = spyOn(c, "getParent");
-		var _ = c.parent;
+		_ = c.parent;
 		expect(spy).toHaveBeenCalled();
 		
 		spy = spyOn(c,"setTickRate");

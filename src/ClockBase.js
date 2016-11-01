@@ -151,7 +151,7 @@ ClockBase.prototype.now = function() {
 Object.defineProperty(ClockBase.prototype, "speed", {
     get: function() { return this.getSpeed(); },
     set: function(v) { return this.setSpeed(v); },
-})
+});
 
 /**
  * @var {Number} tickRate The rate of this clock (in ticks per second).
@@ -169,7 +169,7 @@ Object.defineProperty(ClockBase.prototype, "speed", {
 Object.defineProperty(ClockBase.prototype, "tickRate", {
     get: function() { return this.getTickRate(); },
     set: function(v) { return this.setTickRate(v); },
-})
+});
 
 /**
  * @var {ClockBase} parent The parent of this clock, or <tt>null</tt> if it has no parent.
@@ -187,7 +187,7 @@ Object.defineProperty(ClockBase.prototype, "tickRate", {
 Object.defineProperty(ClockBase.prototype, "parent", {
     get: function() { return this.getParent(); },
     set: function(v) { return this.setParent(v); },
-})
+});
 
 /**
  * @var {Boolean} availabilityFlag The availability flag for this clock.
@@ -212,7 +212,7 @@ Object.defineProperty(ClockBase.prototype, "parent", {
 Object.defineProperty(ClockBase.prototype, "availabilityFlag", {
     get: function() { return this.getAvailabilityFlag(); },
     set: function(v) { return this.setAvailabilityFlag(v); },
-})
+});
 
 /**
  * Returns the current speed of this clock.
@@ -595,9 +595,9 @@ ClockBase.prototype.getRootMaxFreqError = function() {
  * @returns A handle for the timer. Pass this handle to [clearTimeout]{@link ClockBase#clearTimeout} to cancel this timer callback.
  */
 ClockBase.prototype.setTimeout = function(func, ticks) {
-	arguments[1] = arguments[1] + this.now()
-	return this.setAtTime.apply(this, arguments)
-}
+	arguments[1] = arguments[1] + this.now();
+	return this.setAtTime.apply(this, arguments);
+};
 
 /**
  * Request a timeout callback when the time of this clock passes the specified time.
@@ -617,7 +617,7 @@ ClockBase.prototype.setAtTime = function(func, when) {
 	var handle = self.id + ":timeout-" + nextTimeoutHandle++;
 	var root = self.getRoot();
 
-	if (root == null) {
+	if (root === null) {
 		root = self;
 	}
 
@@ -632,9 +632,9 @@ ClockBase.prototype.setAtTime = function(func, when) {
 		func.apply(self, args);
 	}
 ;
-	var numRootTicks = self.toRootTime(when) - root.now()
-	if (numRootTicks != 0) {
-		numRootTicks = root.getSpeed() != 0 ? numRootTicks / root.getSpeed() : NaN;
+	var numRootTicks = self.toRootTime(when) - root.now();
+	if (numRootTicks !== 0) {
+		numRootTicks = root.getSpeed() !== 0 ? numRootTicks / root.getSpeed() : NaN;
 	}
 	var millis = numRootTicks * (1000 / root.getTickRate());
 	var realHandle;
@@ -645,7 +645,7 @@ ClockBase.prototype.setAtTime = function(func, when) {
 	priv.timerHandles[handle] = { realHandle:realHandle, when:when, callback:callback };
 
 	return handle;
-}
+};
 
 
 ClockBase.prototype._rescheduleTimers = function() {
@@ -665,8 +665,8 @@ ClockBase.prototype._rescheduleTimers = function() {
 
 			// re-calculate when this timer is due and re-schedule
 			var numRootTicks = this.toRootTime(d.when) - root.now();
-			if (numRootTicks != 0) {
-				numRootTicks = root.getSpeed() != 0 ? numRootTicks / root.getSpeed() : NaN;
+			if (numRootTicks !== 0) {
+				numRootTicks = root.getSpeed() !== 0 ? numRootTicks / root.getSpeed() : NaN;
 			}
 			var millis = numRootTicks * (1000 / root.getTickRate());
 			if (!isNaN(millis)) {
@@ -676,7 +676,7 @@ ClockBase.prototype._rescheduleTimers = function() {
 			}
 		}
 	}
-}
+};
 
 /**
  * Clear (cancel) a timer that was scheduled using [setTimeout]{@link ClockBase#setTimeout} or [setAtTime][@link ClockBase#setAtTime].
@@ -688,12 +688,12 @@ ClockBase.prototype._rescheduleTimers = function() {
 ClockBase.prototype.clearTimeout = function(handle) {
     var priv = PRIVATE.get(this);
 
-	var d = priv.timerHandles[handle]
+	var d = priv.timerHandles[handle];
 	if (d !== undefined) {
-		clearTimeout(d.realHandle)
-		delete priv.timerHandles[handle]
+		clearTimeout(d.realHandle);
+		delete priv.timerHandles[handle];
 	}
-}
+};
 
 
 

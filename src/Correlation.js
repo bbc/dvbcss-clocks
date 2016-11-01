@@ -77,18 +77,20 @@ var Correlation = function(parentTimeOrObject, childTime, initialError, errorGro
     
     var priv = PRIVATE.get(this);
     
+    var parentTime;
+    
     if (Array.isArray(parentTimeOrObject)) {
-        var parentTime = parentTimeOrObject[0];
-        var childTime = parentTimeOrObject[1];
-        var initialError = parentTimeOrObject[2];
-        var errorGrowthRate = parentTimeOrObject[3];
+        parentTime = parentTimeOrObject[0];
+        childTime = parentTimeOrObject[1];
+        initialError = parentTimeOrObject[2];
+        errorGrowthRate = parentTimeOrObject[3];
     } else if (typeof parentTimeOrObject === "object") {
-        var parentTime = parentTimeOrObject.parentTime;
-        var childTime = parentTimeOrObject.childTime;
-        var initialError = parentTimeOrObject.initialError;
-        var errorGrowthRate = parentTimeOrObject.errorGrowthRate;
+        parentTime = parentTimeOrObject.parentTime;
+        childTime = parentTimeOrObject.childTime;
+        initialError = parentTimeOrObject.initialError;
+        errorGrowthRate = parentTimeOrObject.errorGrowthRate;
     } else {
-        var parentTime = parentTimeOrObject;
+        parentTime = parentTimeOrObject;
     }
     
     priv.parentTime = (typeof parentTime !== "undefined") ? parentTime : 0;

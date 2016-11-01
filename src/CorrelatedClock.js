@@ -137,12 +137,13 @@ CorrelatedClock.prototype.now = function() {
  */
 CorrelatedClock.prototype.toString = function() {
     var priv = PRIVATE.get(this);
+    var p;
     if (priv.parent) {
-        var p = priv.parent.id;
+        p = priv.parent.id;
     } else {
-        var p = "<<no-parent>>";
+        p = "<<no-parent>>";
     }
-    return "CorrelatedClock("+p+", {tickRate:"+priv.freq+", speed:"+priv.speed+", correlation:"+priv.corr+"}) ["+this.id+"]"
+    return "CorrelatedClock("+p+", {tickRate:"+priv.freq+", speed:"+priv.speed+", correlation:"+priv.corr+"}) ["+this.id+"]";
 };
 
 /**
@@ -179,7 +180,7 @@ CorrelatedClock.prototype.setTickRate = function(newTickRate) {
     if (priv.freq != newTickRate) {
         priv.freq = newTickRate;
         this.emit("change", this);
-    };
+    }
 };
 
 CorrelatedClock.prototype.rebaseCorrelationAt = function(t) {
@@ -276,7 +277,7 @@ CorrelatedClock.prototype.calcWhen = function(t) {
 CorrelatedClock.prototype.toParentTime = function(t) {
     var priv = PRIVATE.get(this);
 
-    if (priv.speed == 0) {
+    if (priv.speed === 0) {
         return (t === priv.corr.childTime) ? priv.corr.parentTime : NaN;
     } else {
         return priv.corr.parentTime + (t - priv.corr.childTime) * priv.parent.getTickRate() / priv.freq / priv.speed;
@@ -303,6 +304,7 @@ CorrelatedClock.prototype.getParent = function() {
  */
 CorrelatedClock.prototype.setParent = function(newParent) {
     var priv = PRIVATE.get(this);
+    var event;
     
     if (priv.parent != newParent) {
         if (priv.parent) {
@@ -341,14 +343,14 @@ CorrelatedClock.prototype.setParent = function(newParent) {
  */
 CorrelatedClock.prototype.quantifySignedChange = function(newCorrelation, newSpeed) {
     var priv = PRIVATE.get(this);
-    var newCorrelation = new Correlation(newCorrelation);
+    newCorrelation = new Correlation(newCorrelation);
 
     if (newSpeed != priv.speed) {
         return (newSpeed > priv.speed) ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
     } else {
         var nx = newCorrelation.parentTime;
         var nt = newCorrelation.childTime;
-        if (newSpeed != 0) {
+        if (newSpeed !== 0) {
             var ox = this.toParentTime(nt);
             return (nx-ox) / priv.parent.getTickRate();
         } else {

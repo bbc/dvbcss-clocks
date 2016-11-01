@@ -12,7 +12,7 @@ var DateNowClock = require("DateNowClock");
 
 describe("DateNowClock", function() {
 	it("exists", function() {
-		expect(DateNowClock).toBeDefined()
+		expect(DateNowClock).toBeDefined();
 	});
 
     it("can be created with no arguments, defaulting to 1kHz tickrate", function() {
@@ -45,13 +45,13 @@ describe("DateNowClock", function() {
     it("throws an error when asked to convert to parent time", function() {
         var dnc = new DateNowClock({tickRate:1000000});
 
-        expect(function() { dnc.toParentTime(5000) }).toThrow();
+        expect(function() { dnc.toParentTime(5000); }).toThrow();
     });
     
     it("throws an error when asked to convert from parent time", function() {
         var dnc = new DateNowClock({tickRate:1000000});
 
-        expect(function() { dnc.fromParentTime(5000) }).toThrow();      
+        expect(function() { dnc.fromParentTime(5000); }).toThrow();      
     });
     
     it("returns null when getParent() is called", function() {

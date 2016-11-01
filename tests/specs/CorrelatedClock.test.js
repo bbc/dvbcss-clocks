@@ -14,7 +14,7 @@ var Correlation = require("Correlation");
 
 describe("CorrelatedClock", function() {
 	it("exists", function() {
-		expect(CorrelatedClock).toBeDefined()
+		expect(CorrelatedClock).toBeDefined();
 	});
 
     it("takes a parent clock as an argument", function() {
@@ -170,7 +170,7 @@ describe("CorrelatedClock", function() {
         });
         expect(c.toParentTime(300)).toEqual(50);
         expect(c.toParentTime(400)).toBeNaN();
-    })
+    });
     
     it("can convert a time from that of its parent", function() {
         var datenow = spyOn(Date,"now");
@@ -367,7 +367,7 @@ describe("CorrelatedClock - setTimeout, clearTimeout", function() {
         var callback = jasmine.createSpy("tc");
 
         var dnc = new DateNowClock({tickRate:1000});
-        dnc.getSpeed = function() { return 0.5; }
+        dnc.getSpeed = function() { return 0.5; };
         var c = new CorrelatedClock(dnc, {tickRate:1000,correlation:new Correlation(0,100)});
 
         dateNowSpy.and.returnValue(500);

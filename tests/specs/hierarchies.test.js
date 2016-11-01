@@ -23,29 +23,29 @@ describe("For hierarchies of clocks", function() {
         var a2 = new CorrelatedClock(a1, {tickRate:1000,correlation:new Correlation(0,0)});
         var b2 = new CorrelatedClock(b1, {tickRate:1000,correlation:new Correlation(0,0)});
         
-        expect(function() { a.toOtherClockTime(b, 5)}).toThrow();
-        expect(function() { a.toOtherClockTime(b1, 5)}).toThrow();
-        expect(function() { a.toOtherClockTime(b2, 5)}).toThrow();
+        expect(function() { a.toOtherClockTime(b, 5); }).toThrow();
+        expect(function() { a.toOtherClockTime(b1, 5); }).toThrow();
+        expect(function() { a.toOtherClockTime(b2, 5); }).toThrow();
 
-        expect(function() { a1.toOtherClockTime(b, 5)}).toThrow();
-        expect(function() { a1.toOtherClockTime(b1, 5)}).toThrow();
-        expect(function() { a1.toOtherClockTime(b2, 5)}).toThrow();
+        expect(function() { a1.toOtherClockTime(b, 5); }).toThrow();
+        expect(function() { a1.toOtherClockTime(b1, 5); }).toThrow();
+        expect(function() { a1.toOtherClockTime(b2, 5); }).toThrow();
 
-        expect(function() { a2.toOtherClockTime(b, 5)}).toThrow();
-        expect(function() { a2.toOtherClockTime(b1, 5)}).toThrow();
-        expect(function() { a2.toOtherClockTime(b2, 5)}).toThrow();
+        expect(function() { a2.toOtherClockTime(b, 5); }).toThrow();
+        expect(function() { a2.toOtherClockTime(b1, 5); }).toThrow();
+        expect(function() { a2.toOtherClockTime(b2, 5); }).toThrow();
 
-        expect(function() { b.toOtherClockTime(a, 5)}).toThrow();
-        expect(function() { b.toOtherClockTime(a1, 5)}).toThrow();
-        expect(function() { b.toOtherClockTime(a2, 5)}).toThrow();
+        expect(function() { b.toOtherClockTime(a, 5); }).toThrow();
+        expect(function() { b.toOtherClockTime(a1, 5); }).toThrow();
+        expect(function() { b.toOtherClockTime(a2, 5); }).toThrow();
 
-        expect(function() { b1.toOtherClockTime(a, 5)}).toThrow();
-        expect(function() { b1.toOtherClockTime(a1, 5)}).toThrow();
-        expect(function() { b1.toOtherClockTime(a2, 5)}).toThrow();
+        expect(function() { b1.toOtherClockTime(a, 5); }).toThrow();
+        expect(function() { b1.toOtherClockTime(a1, 5); }).toThrow();
+        expect(function() { b1.toOtherClockTime(a2, 5); }).toThrow();
 
-        expect(function() { b2.toOtherClockTime(a, 5)}).toThrow();
-        expect(function() { b2.toOtherClockTime(a1, 5)}).toThrow();
-        expect(function() { b2.toOtherClockTime(a2, 5)}).toThrow();
+        expect(function() { b2.toOtherClockTime(a, 5); }).toThrow();
+        expect(function() { b2.toOtherClockTime(a1, 5); }).toThrow();
+        expect(function() { b2.toOtherClockTime(a2, 5); }).toThrow();
     });
     
     it("toOtherClockTime() can be used to convert to the parent's time", function() {
@@ -200,7 +200,7 @@ describe("For hierarchies of clocks", function() {
         expect(b.isAvailable()).toBeTruthy();
         expect(c.isAvailable()).toBeFalsy();
         expect(d.isAvailable()).toBeFalsy();
-        [aa,ua,ca,ab,ub,cb,,cc,ac,ad,cd].forEach(function(callback) {
+        [aa,ua,ca,ab,ub,cb,cc,ac,ad,cd].forEach(function(callback) {
              expect(callback).not.toHaveBeenCalled();
          });
         [uc,ud].forEach(function(callback) {
