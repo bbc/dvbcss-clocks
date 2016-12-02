@@ -12,6 +12,7 @@ var ClockBase = require("./ClockBase");
 var DateNowClock = require("./DateNowClock");
 var CorrelatedClock = require("./CorrelatedClock");
 var Correlation = require("./Correlation");
+var OffsetClock = require("./OffsetClock");
 
 /**
  * @module dvbcss-clocks
@@ -24,6 +25,7 @@ var Correlation = require("./Correlation");
  *   <li> cdvbcss-locks.{@link DateNowClock} - a root clock based on <tt>Date.now()</tt>
  *   <li> dvbcss-clocks.{@link CorrelatedClock} - a clock based on a parent using a correlation.
  *   <li> dvbcss-clocks.{@link Correlation} - a correlation.
+ *   <li> dvbcss-clocks.{@link OffsetClock} - a clock that applies a fixed offset to enable compensating for rendering latency.
  * </ul>
  *
  * <p>Clock can be built into hierarchies, where one clock is the root, and other
@@ -56,5 +58,10 @@ module.exports = {
      * a correlation.
      * @see Correlation
      */
-    Correlation: Correlation
+    Correlation: Correlation,
+    /**
+     * a clock that applies a fixed offset to enable compensating for rendering latency.
+     * @see OffsetClock
+     */
+    OffsetClock: OffsetClock
 };
