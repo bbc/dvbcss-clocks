@@ -224,6 +224,24 @@ describe("For hierarchies of clocks", function() {
          
     });
     
+    it("can still propagate availability changes even if availability is changed mid availablility change handler", function() {
+        var unavailabilityListener = jasmine.createSpy("spy");
+        
+        var a = new DateNowClock({tickRate:1000000});
+        var b = new CorrelatedClock(a, {tickRate:1000, correlation:new Correlation(0,0)});
+        var c = new CorrelatedClock(null, {tickRate:2000, correlation:new Correlation(0,0)});
+        
+        b.on("unavailable", function() {
+            c.availabilityFlag = false;
+        });
+        c.setParent(b);
+        c.on("unavailable", unavailabilityListener);
+        b.availabilityFlag = false;
+
+        
+        expect(unavailabilityListener).toHaveBeenCalled();
+    });
+    
     it("can calculate a difference between two clocks using clockDiff() method", function() {
         var datenow = spyOn(Date,"now");
         

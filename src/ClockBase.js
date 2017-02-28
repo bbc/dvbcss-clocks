@@ -122,6 +122,8 @@ var ClockBase = function() {
     
     priv.timerHandles = {};
     this.on('change', this._rescheduleTimers.bind(this));
+    
+    priv.availablePrev = this._availability;
 };
 
 inherits(ClockBase, EventEmitter);
@@ -305,20 +307,25 @@ ClockBase.prototype.isAvailable = function() {
  * @fires available
  */
 ClockBase.prototype.setAvailabilityFlag = function(availability) {
-    var isChange = (this._availability && !availability) || (!(this._availability) && availability);
-    var parent = this.getParent();
-    if (parent) {
-        isChange = isChange && parent.isAvailable();
-    }
-    
     this._availability = availability;
+    this.notifyAvailabilityChange();
+};
+
+/**
+ * Cause the "available" or "unavailable" events to fire if availability has
+ * changed since last time this method was called. Subclasses should call this
+ * to robustly generate "available" or "unavailable" events instead of trying
+ * to figure out if there has been a change for themselves.
+ * @fires unavailable
+ * @fires available
+ */
+ClockBase.prototype.notifyAvailabilityChange = function() {
+    var priv = PRIVATE.get(this);
     
-    if (isChange) {
-        if (availability) {
-            this.emit("available", this);
-        } else {
-            this.emit("unavailable", this);
-        }
+    var availableNow = this.isAvailable();
+    if (Boolean(availableNow) != Boolean(priv.availablePrev)) {
+        priv.availablePrev = availableNow;
+        this.emit(availableNow?"available":"unavailable", this);
     }
 };
 

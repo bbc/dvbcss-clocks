@@ -86,18 +86,8 @@ var OffsetClock = function(parent, options) {
         "change" : function(causeClock) {
             this.emit("change", this);
         }.bind(this),
-        "available" : function(causeClock) {
-            // propagate only if it has an effect. If this clock is unavailable anyway, then there is no effect.
-            if (this.getAvailabilityFlag()) {
-                this.emit("available", this);
-            }
-        }.bind(this),
-        "unavailable" : function(causeClock) {
-            // propagate only if it has an effect. If this clock is unavailable anyway, then there is no effect.
-            if (this.getAvailabilityFlag()) {
-                this.emit("unavailable", this);
-            }
-        }.bind(this)
+        "available" : this.notifyAvailabilityChange.bind(this),
+        "unavailable" : this.notifyAvailabilityChange.bind(this),
     };
 
     priv.parent = null;
