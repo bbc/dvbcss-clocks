@@ -249,7 +249,7 @@ CorrelatedClock.prototype.setCorrelation = function(newCorrelation) {
 CorrelatedClock.prototype.setCorrelationAndSpeed = function(newCorrelation, newSpeed) {
     var priv = PRIVATE.get(this);
 
-    priv.corr = newCorrelation;
+    priv.corr = new Correlation(newCorrelation);
     priv.speed = newSpeed;
     this.emit("change",this);
 };
