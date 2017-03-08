@@ -1,6 +1,6 @@
 /****************************************************************************
  * Copyright 2015 British Broadcasting Corporation
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,7 +39,7 @@ var PRIVATE = new WeakMap();
  * Speed and tick rate are then taken into account to extrapolate from that
  * point.
  *
- * 
+ *
  *
  *
  * @constructor
@@ -52,7 +52,7 @@ var PRIVATE = new WeakMap();
  * @default tickRate: 1000, speed: 1.0, correlation: Correlation(0,0,0,0)
  *
  * @example
- * root = new DateNowClock(); 
+ * root = new DateNowClock();
  *
  * // tickRate = 1000, correlation = (0,0)
  * c1 = new CorrelatedClock(root);
@@ -79,21 +79,21 @@ var CorrelatedClock = function(parent, options) {
     } else {
         priv.freq = 1000;
     }
-        
+
     if (options && (typeof options.speed !== "undefined")) {
         priv.speed = options.speed;
     } else {
         priv.speed = 1.0;
     }
-    
+
     priv.parent = parent;
-    
+
     if (options && (typeof options.correlation !== "undefined")) {
         priv.corr = new Correlation(options.correlation);
     } else {
         priv.corr = new Correlation(0,0,0,0);
     }
-    
+
     priv.parentHandlers = {
         "change" : function(causeClock) {
             this.emit("change", this);
@@ -113,7 +113,7 @@ var CorrelatedClock = function(parent, options) {
     };
 
     priv.parent = null;
-    this.setParent(parent);    
+    this.setParent(parent);
 };
 
 inherits(CorrelatedClock, ClockBase);
@@ -124,7 +124,7 @@ inherits(CorrelatedClock, ClockBase);
 CorrelatedClock.prototype.now = function() {
     var priv = PRIVATE.get(this);
     var corr = priv.corr;
-    
+
     return corr.childTime + (priv.parent.now() - corr.parentTime) * priv.freq * priv.speed / priv.parent.getTickRate();
 };
 
@@ -176,7 +176,7 @@ CorrelatedClock.prototype.getTickRate = function() {
  */
 CorrelatedClock.prototype.setTickRate = function(newTickRate) {
     var priv = PRIVATE.get(this);
-    
+
     if (priv.freq != newTickRate) {
         priv.freq = newTickRate;
         this.emit("change", this);
@@ -195,7 +195,7 @@ CorrelatedClock.prototype.rebaseCorrelationAt = function(t) {
 
 /**
  * @var {Correlation} correlation The correlation used by this clock to define its relationship to its parent.
- * 
+ *
  * <p>Read this property to obtain the correlation currently being used.
  *
  * <p>Change the correlation by setting this property to a new one. Either assign a {@link Correlation} object, or an object containing
@@ -248,7 +248,7 @@ CorrelatedClock.prototype.setCorrelation = function(newCorrelation) {
  */
 CorrelatedClock.prototype.setCorrelationAndSpeed = function(newCorrelation, newSpeed) {
     var priv = PRIVATE.get(this);
-    
+
     priv.corr = newCorrelation;
     priv.speed = newSpeed;
     this.emit("change",this);
@@ -305,7 +305,7 @@ CorrelatedClock.prototype.getParent = function() {
 CorrelatedClock.prototype.setParent = function(newParent) {
     var priv = PRIVATE.get(this);
     var event;
-    
+
     if (priv.parent != newParent) {
         if (priv.parent) {
             for(event in priv.parentHandlers) {
@@ -320,7 +320,7 @@ CorrelatedClock.prototype.setParent = function(newParent) {
                 priv.parent.on(event, priv.parentHandlers[event]);
             }
         }
-        
+
         this.emit("change", this);
     }
 };
@@ -382,9 +382,9 @@ CorrelatedClock.prototype.quantifyChange = function(newCorrelation, newSpeed) {
  * Returns True if the potential for difference in tick values of this clock
  * (using a new correlation and speed) exceeds a specified threshold.
  *
- * <p>This is implemented by applying a threshold to the output of 
+ * <p>This is implemented by applying a threshold to the output of
  * [quantifyChange()]{@link CorrelatedClock#quantifyChange}.
- *         
+ *
  * @param {Correlation} newCorrelation A new correlation
  * @param {Number} newSpeed A new speed
  * @returns {Boolean} True if the potential difference can/will eventually exceed the threshold.

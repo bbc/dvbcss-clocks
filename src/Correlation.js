@@ -1,6 +1,6 @@
 /****************************************************************************
  * Copyright 2015 British Broadcasting Corporation
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,7 @@ var PRIVATE = new WeakMap();
  * @classdesc
  * This is an immutable object representing a correlation.
  * It also can represent associated error/uncertaint information.
- * 
+ *
  * <p>The point of correlation ([parentTime]{@link Correlation#parentTime}, [childTime]{@link Correlation#childTime}) represents a relationship between
  * a parent clock and a child clock - by saying that the parent clock
  * is at point [parentTime]{@link Correlation#parentTime} when the child clock is at point [childTime]{@link Correlation#childTime}.
@@ -74,11 +74,11 @@ var PRIVATE = new WeakMap();
  */
 var Correlation = function(parentTimeOrObject, childTime, initialError, errorGrowthRate) {
     PRIVATE.set(this, {});
-    
+
     var priv = PRIVATE.get(this);
-    
+
     var parentTime;
-    
+
     if (Array.isArray(parentTimeOrObject)) {
         parentTime = parentTimeOrObject[0];
         childTime = parentTimeOrObject[1];
@@ -92,7 +92,7 @@ var Correlation = function(parentTimeOrObject, childTime, initialError, errorGro
     } else {
         parentTime = parentTimeOrObject;
     }
-    
+
     priv.parentTime = (typeof parentTime !== "undefined") ? parentTime : 0;
     priv.childTime  = (typeof childTime !== "undefined")  ? childTime  : 0;
 
@@ -127,7 +127,7 @@ Correlation.prototype.butWith = function(changes) {
         var c = changes.childTime;
         var i = changes.initialError;
         var g = changes.errorGrowthRate;
-        
+
         if (typeof p === "undefined") { p = priv.parentTime; }
         if (typeof c === "undefined") { c = priv.childTime; }
         if (typeof i === "undefined") { i = priv.initialError; }
@@ -192,6 +192,19 @@ Correlation.prototype.equals = function(obj) {
         priv.childTime === obj.childTime &&
         priv.initialError === obj.initialError &&
         priv.errorGrowthRate === obj.errorGrowthRate;
+};
+
+Correlation.prototype.toJSON = function() {
+  var priv = PRIVATE.get(this);
+
+  return JSON.stringify(
+    {
+      parentTime : priv.parentTime,
+      childTime : priv.childTime,
+      initialError : priv.initialError,
+      errorGrowthRate : priv.errorGrowthRate
+    }
+  );
 };
 
 
