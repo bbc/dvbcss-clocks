@@ -22,7 +22,6 @@
   "dependencies": {
     "events": "^1.1.1",
     "inherits": "^2.0.1",
-    "weak-map": "^1.0.5",
-    "posix-clock": "^0.2.2"
+    "weak-map": "^1.0.5"
   }
 }
