@@ -51,15 +51,19 @@ module.exports = function(grunt) {
         output: {
           path: __dirname + "/build/tests/",
           filename: "specs.js",
-          chunkFilename: "chunk-[name]-[chunkhash].js"
+          chunkFilename: "chunk-[name]-[chunkhash].js",
+          sourceMapFilename: "[file].map",
         },
         module: {
           loaders: []
         },
         resolve: {
-          root: [ __dirname + "/tests/specs", __dirname + "/tests/util",  __dirname+"/build/lib" ]
-        }
-      }
+          root: [ __dirname + "/tests/specs", __dirname + "/tests/util",  __dirname+"/src" ]
+        },
+        devtool: [
+          "source-map"
+        ],
+      },
     },
     
     jasmine: {
@@ -115,7 +119,7 @@ module.exports = function(grunt) {
   // default do nothing
   grunt.registerTask('default', ['build', 'watch']);
   
-  grunt.registerTask('test', ['build', 'clean:tests', 'webpack:specs', 'jasmine', 'watch:tests']);
+  grunt.registerTask('test', ['build', 'clean:tests', 'webpack:specs', 'jasmine:tests', 'watch:tests']);
   grunt.registerTask('build', ['clean:dist', 'clean:build', 'copy:src', 'webpack:lib']);
   
 };
