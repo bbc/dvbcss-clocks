@@ -397,5 +397,19 @@ describe("CorrelatedClock - setTimeout, clearTimeout", function() {
 		expect(c.dispersionAtTime(-10)).toEqual(dnc.dispersionAtTime(-10) + 0.5 + 0.1*10/1000);
 	});
 
+	it("reports NaN when now() is called if it has no parent", function() {
+		var c = new CorrelatedClock(null);
+		expect(isNaN(c.now())).toBeTruthy();
+	});
+	
+	it("reports NaN when using toParentTime if it has no parent", function() {
+		var c = new CorrelatedClock(null);
+		expect(isNaN(c.toParentTime(5))).toBeTruthy();
+	});
+
+	it("reports NaN when using fromParentTime if it has no parent", function() {
+		var c = new CorrelatedClock(null);
+		expect(isNaN(c.fromParentTime(5))).toBeTruthy();
+	});
 });
 

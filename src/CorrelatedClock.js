@@ -114,6 +114,10 @@ inherits(CorrelatedClock, ClockBase);
 CorrelatedClock.prototype.now = function() {
     var priv = PRIVATE.get(this);
     var corr = priv.corr;
+    
+    if (priv.parent === null || priv.parent === undefined) {
+        return NaN
+    }
 
     return corr.childTime + (priv.parent.now() - corr.parentTime) * priv.freq * priv.speed / priv.parent.getTickRate();
 };
@@ -267,7 +271,9 @@ CorrelatedClock.prototype.calcWhen = function(t) {
 CorrelatedClock.prototype.toParentTime = function(t) {
     var priv = PRIVATE.get(this);
 
-    if (priv.speed === 0) {
+    if (priv.parent === null || priv.parent === undefined) {
+        return NaN;
+    } else if (priv.speed === 0) {
         return (t === priv.corr.childTime) ? priv.corr.parentTime : NaN;
     } else {
         return priv.corr.parentTime + (t - priv.corr.childTime) * priv.parent.getTickRate() / priv.freq / priv.speed;
@@ -279,7 +285,11 @@ CorrelatedClock.prototype.toParentTime = function(t) {
  */
 ClockBase.prototype.fromParentTime = function(t) {
     var priv = PRIVATE.get(this);
-    return priv.corr.childTime + (t - priv.corr.parentTime) * priv.freq * priv.speed / priv.parent.getTickRate();
+    if (priv.parent === null || priv.parent === undefined) {
+        return NaN;
+    } else {
+        return priv.corr.childTime + (t - priv.corr.parentTime) * priv.freq * priv.speed / priv.parent.getTickRate();
+    }
 };
 
 /**

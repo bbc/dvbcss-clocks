@@ -129,7 +129,7 @@ var ClockBase = function() {
 inherits(ClockBase, EventEmitter);
 
 /**
- * @returns the current time value of this clock in units of ticks of the clock.
+ * @returns the current time value of this clock in units of ticks of the clock, or NaN if it cannot be determined (e.g. if the clock is missinga parent)
  * @abstract
  */
 ClockBase.prototype.now = function() {
