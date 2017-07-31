@@ -180,19 +180,19 @@ describe("OffsetClock", function() {
         it("correctly converts to root time", function() {
             var OC_AHEAD_BY = 124;
             var oc = new OffsetClock(parent, {offset:OC_AHEAD_BY});
-            var t = 1285203;
+            var t = 1285.2;
             var rt = oc.toRootTime(t);
             var rt2 = parent.toRootTime(t);
-            expect(rt + OC_AHEAD_BY*root.tickRate, rt2);
+            expect(rt + OC_AHEAD_BY/1000*root.tickRate).toEqual(rt2);
         });
         
         it("correctly converts from root time", function() {
             var OC_AHEAD_BY = 124;
             var oc = new OffsetClock(parent, {offset:OC_AHEAD_BY});
-            var rt = 22849128011;
+            var rt = 22849128;
             var t = oc.fromRootTime(rt);
-            var t2 = parent.fromRootTime(rt + OC_AHEAD_BY*root.tickRate);
-            expect(t, t2);
+            var t2 = parent.fromRootTime(rt + OC_AHEAD_BY/1000*root.tickRate);
+            expect(t).toEqual(t2);
         });
         
     });
