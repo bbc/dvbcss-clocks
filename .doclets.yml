@@ -1,0 +1,10 @@
+files:
+  - README.md
+dir: src
+packageJson: package.json
+articles:
+  - Overview: README.md
+  - Authors: AUTHORS
+  - Licence: LICENSE.md
+  
+  

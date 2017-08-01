@@ -1,12 +1,27 @@
 /****************************************************************************
- * Copyright 2015 British Broadcasting Corporation
+ * Copyright 2017 British Broadcasting Corporation
+ * and contributions Copyright 2017 British Telecommunications (BT) PLC.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ****************************************************************************/
+ *
+ * --------------------------------------------------------------------------
+ * Summary of parts containing contributions:
+ *   by British Telecommunications (BT) PLC:
+ *     test "can convert a time to that of its parent"
+ *     test "can convert a time from that of its parent"
+ *     test "A change of speed to 0 prevent advancing of a timer works"
+ *     test "A change of speed of the root clock to advance of a timer works"
+*****************************************************************************/
 
 var CorrelatedClock = require("CorrelatedClock");
 var DateNowClock = require("DateNowClock");

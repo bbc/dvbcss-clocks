@@ -1,15 +1,29 @@
 {
   "name": "dvbcss-clocks",
-  "version": "0.0.3",
-  "description": "Library implementing clock objects",
+  "version": "0.0.4",
+  "description": "Javascript library implementing clock objects for modelling timelines. Useful in DVB CSS implementations.",
+  "keywords": [
+    "dvb",
+    "dvbcss",
+    "clock",
+    "time",
+    "timing",
+    "timelines",
+    "hierarchy",
+    "correlation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bbc/dvbcss-clocks.git"
+  },
   "main": "dist/dvbcss-clocks.js",
   "scripts": {
     "test": "grunt test",
     "prepare": "grunt build"
   },
   "author": {
-    "name": "Matt Hammond",
-    "email": "matt.hammond@bbc.co.uk"
+    "name": "British Broadcasting Corporation",
+    "url": "http://www.bbc.co.uk/rd/"
   },
   "files": [
     "src/**/*.js",
@@ -20,7 +34,7 @@
     "README.md",
     "dist"
   ],
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-contrib-clean": "^1.0.0",
