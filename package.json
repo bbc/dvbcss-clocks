@@ -5,7 +5,7 @@
   "main": "dist/dvbcss-clocks.js",
   "scripts": {
     "test": "grunt test",
-    "prepublish": "grunt build"
+    "prepare": "grunt build"
   },
   "author": {
     "name": "Matt Hammond",
