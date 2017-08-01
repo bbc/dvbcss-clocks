@@ -2,12 +2,24 @@
   "name": "dvbcss-clocks",
   "version": "0.0.3",
   "description": "Library implementing clock objects",
-  "main": "src/main.js",
-  "scripts": {},
+  "main": "dist/dvbcss-clocks.js",
+  "scripts": {
+    "test": "grunt test",
+    "prepublish": "grunt build"
+  },
   "author": {
     "name": "Matt Hammond",
     "email": "matt.hammond@bbc.co.uk"
   },
+  "files": [
+    "src/**/*.js",
+    "tests/**/*.js",
+    "AUTHORS",
+    "package.json",
+    "Gruntfile.js",
+    "README.md",
+    "dist"
+  ],
   "license": "UNLICENSED",
   "devDependencies": {
     "grunt": "^1.0.1",

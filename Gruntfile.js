@@ -119,7 +119,8 @@ module.exports = function(grunt) {
   // default do nothing
   grunt.registerTask('default', ['build', 'watch']);
   
-  grunt.registerTask('test', ['build', 'clean:tests', 'webpack:specs', 'jasmine:tests', 'watch:tests']);
+  grunt.registerTask('test', ['build', 'clean:tests', 'webpack:specs', 'jasmine:tests']);
+  grunt.registerTask('test-watch', ['test', 'watch:tests']);
   grunt.registerTask('build', ['clean:dist', 'clean:build', 'copy:src', 'webpack:lib']);
   
 };

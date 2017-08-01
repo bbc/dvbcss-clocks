@@ -29,3 +29,8 @@ __pycache__/
 **/node_modules/
 
 /doc/
+
+*.tgz
+*.tar.gz
+package-lock.json
+.grunt
