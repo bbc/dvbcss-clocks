@@ -1,5 +1,8 @@
 # JS objects to create hierarchies of clocks or timelines
 
+[![Build status](https://travis-ci.org/bbc/dvbcss-clocks.svg?branch=master)](https://travis-ci.org/bbc/dvbcss-clocks)
+[![API Doc](https://doclets.io/bbc/dvbcss-clocks/master.svg)](https://doclets.io/bbc/dvbcss-clocks/master)
+
 **dvbcss-clocks** is a Javascript library of classes for representing clocks
 and timelines and their relationships to each other. It can be used in event
 driven real-time applications to drive and track the progress of time, such
