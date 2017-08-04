@@ -1,5 +1,6 @@
 # JS objects to create hierarchies of clocks or timelines
 
+[![npm version](https://badge.fury.io/js/dvbcss-clocks.svg)](https://badge.fury.io/js/dvbcss-clocks)
 [![Build status](https://travis-ci.org/bbc/dvbcss-clocks.svg?branch=master)](https://travis-ci.org/bbc/dvbcss-clocks)
 [![API Doc](https://doclets.io/bbc/dvbcss-clocks/master.svg)](https://doclets.io/bbc/dvbcss-clocks/master)
 
