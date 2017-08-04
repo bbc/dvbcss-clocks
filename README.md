@@ -30,7 +30,7 @@ Or download or clone this repository and build:
 
 ### Documentation
 
-The full docs for the library [can be read online here](https://doclets.io/bbc/dvbcss-clocks/master/Overview).
+The full docs for the library [can be read online here](https://doclets.io/bbc/dvbcss-clocks/master/overview).
 
 To build the docs yourself:
 
