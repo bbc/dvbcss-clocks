@@ -203,14 +203,12 @@ Correlation.prototype.equals = function(obj) {
 Correlation.prototype.toJSON = function() {
   var priv = PRIVATE.get(this);
 
-  return JSON.stringify(
-    {
+  return {
       parentTime : priv.parentTime,
       childTime : priv.childTime,
       initialError : priv.initialError,
       errorGrowthRate : priv.errorGrowthRate
-    }
-  );
+    };
 };
 
 

@@ -144,6 +144,17 @@ describe("Correlation", function() {
 		expect(c6).toEqual(new Correlation(1,2,3,1000));
 	});
 	
-	
+	it("Can be serialised and deserialised using JSON.parse and JSON.stringify", function () {
+		var c = new Correlation(1,2,3,4);
+
+		var c1 = JSON.stringify(c);
+		expect(typeof c1).toEqual("string");
+
+		var c2 = JSON.parse(c1);
+		expect(c2.parentTime).toEqual(c.parentTime);
+		expect(c2.childTime).toEqual(c.childTime);
+		expect(c2.initialError).toEqual(c.initialError);
+		expect(c2.errorGrowthRate).toEqual(c.errorGrowthRate);
+	});
 });
 	
