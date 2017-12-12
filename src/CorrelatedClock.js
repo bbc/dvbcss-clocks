@@ -405,6 +405,7 @@ CorrelatedClock.prototype.quantifyChange = function(newCorrelation, newSpeed) {
  *
  * @param {Correlation} newCorrelation A new correlation
  * @param {Number} newSpeed A new speed
+ * @param {Number} thresholdSecs Threshold in seconds
  * @returns {Boolean} True if the potential difference can/will eventually exceed the threshold.
  */
 CorrelatedClock.prototype.isChangeSignificant = function(newCorrelation, newSpeed, thresholdSecs) {
